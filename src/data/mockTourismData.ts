@@ -1,0 +1,2801 @@
+import { 
+  TouristSpot, HotelItem, RestaurantItem, EntertainmentItem, TaxiRoute, GuideItem, 
+  TourPackage, DistrictZone, Destination, ServiceProvider, Booking, SOSAlert, 
+  OrganisationAdvisory, FeedbackItem, ComplaintItem 
+} from '../types';
+
+// ============================================================================
+// OFFICIAL DATASETS FOR SMART INDIA HACKATHON 2026 (PS ID: 26204)
+// "TourMaster" - 24 Tourism Spots & Circuits in Maharashtra
+// ============================================================================
+
+// ----------------------------------------------------
+// 1. TOURISM SPOTS DATASET (24 Spots as per Project PDF)
+// ----------------------------------------------------
+export const MASTER_TOURIST_SPOTS: TouristSpot[] = [
+  {
+    id: 'spot-pune-1',
+    name: 'Shaniwar Wada',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Heritage & Culture',
+    description: 'Historical fortification built in 1732, the seat of the Peshwa rulers of the Maratha Empire.',
+    lat: 18.5196,
+    lng: 73.8553,
+    timings: '08:00 AM - 06:30 PM',
+    entryFee: 25,
+    rating: 4.6,
+    reviewsCount: 38400,
+    ecoScore: 90,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning or late afternoon for light and sound show',
+    nearestTransport: 'PMC E-Bus & Auto Stand directly outside gate (0-3 km from Pune)',
+    tags: ['Maratha history', 'heritage', 'Peshwa Seat', 'Iconic Landmark']
+  },
+  {
+    id: 'spot-pune-2',
+    name: 'Sinhagad Fort',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'Ancient Sahyadri fortress 30 km from Pune, renowned for Tanaji Malusare battle, ridge trekking, and Kanda Bhajji & Pithla Bhakri.',
+    lat: 18.3663,
+    lng: 73.7558,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 50,
+    rating: 4.8,
+    reviewsCount: 42000,
+    ecoScore: 96,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Early sunrise trek or monsoon clouds view',
+    nearestTransport: 'Shared Eco Jeep & Green EV Cab from base camp (30 km from Pune)',
+    tags: ['Fort', 'trekking', 'scenery', 'Sahyadri', 'Battleground']
+  },
+  {
+    id: 'spot-pune-3',
+    name: 'Dagdusheth Halwai Ganpati',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Spiritual & Wellness',
+    description: 'Iconic Hindu temple dedicated to Lord Ganesha, famous for ornate gold idol and Ganeshotsav festival celebrations.',
+    lat: 18.5165,
+    lng: 73.8561,
+    timings: '06:00 AM - 10:30 PM',
+    entryFee: 0,
+    rating: 4.9,
+    reviewsCount: 54000,
+    ecoScore: 92,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Early morning aarti (07:30 AM)',
+    nearestTransport: 'Appa Balwant Chowk Metro / E-Rickshaw (3 km from Pune)',
+    tags: ['Famous temple', 'Spiritual', 'Pilgrimage', 'Heritage']
+  },
+  {
+    id: 'spot-pune-4',
+    name: 'Aga Khan Palace',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Heritage & Culture',
+    description: 'Grand 1892 Italian-arched palace where Mahatma Gandhi and Kasturba Gandhi were imprisoned during the Quit India Movement.',
+    lat: 18.5524,
+    lng: 73.9015,
+    timings: '09:00 AM - 05:30 PM',
+    entryFee: 25,
+    rating: 4.6,
+    reviewsCount: 21000,
+    ecoScore: 94,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning 10:00 AM',
+    nearestTransport: 'Kalyani Nagar Metro Station (6 km from Pune)',
+    tags: ['History', 'Gandhi memorial', 'Italian Architecture']
+  },
+  {
+    id: 'spot-pune-5',
+    name: 'Khadakwasla Dam',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Nature & Wildlife',
+    description: 'Scenic reservoir on the Mutha River with panoramic sunset viewpoints, street delicacies, and breezy waterfront promenades.',
+    lat: 18.4357,
+    lng: 73.7634,
+    timings: '06:00 AM - 07:00 PM',
+    entryFee: 0,
+    rating: 4.5,
+    reviewsCount: 31000,
+    ecoScore: 88,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Sunset (05:00 PM - 06:30 PM)',
+    nearestTransport: 'Khadakwasla PMPML Bus Stop / Cab (20 km from Pune)',
+    tags: ['Lake', 'sunset', 'nature', 'Dam Promenade']
+  },
+  {
+    id: 'spot-pune-6',
+    name: 'Rajgad Fort',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'Capital of Maratha Empire for over 26 years, king of forts featuring Padmavati Machi, Sanjivani Machi, and Balekilla.',
+    lat: 18.2464,
+    lng: 73.6828,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 50,
+    rating: 4.9,
+    reviewsCount: 18500,
+    ecoScore: 98,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Early morning start from Gunjavane base village',
+    nearestTransport: 'Private Cab from Pune (60 km from Pune)',
+    tags: ['Trekking', 'Maratha history', 'King of Forts', 'Sahyadri']
+  },
+  {
+    id: 'spot-pune-7',
+    name: 'Torna Fort',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'First fort captured by Chhatrapati Shivaji Maharaj in 1646 at age 16, offering intense ridge climbing and Zunjar Machi views.',
+    lat: 18.2770,
+    lng: 73.6214,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 50,
+    rating: 4.8,
+    reviewsCount: 14200,
+    ecoScore: 97,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Sunrise trek starting from Velhe village',
+    nearestTransport: 'Cab / Private Vehicle to Velhe (65 km from Pune)',
+    tags: ['Trekking', 'historic fort', 'Prachandagad', 'Adventure']
+  },
+  {
+    id: 'spot-pune-8',
+    name: 'Mulshi Dam',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Nature & Wildlife',
+    description: 'Pristine ecological reservoir nestled in the Sahyadri mountains with lush green waterfalls, mist, and eco-resorts.',
+    lat: 18.5204,
+    lng: 73.5186,
+    timings: '06:00 AM - 06:30 PM',
+    entryFee: 0,
+    rating: 4.7,
+    reviewsCount: 26000,
+    ecoScore: 95,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Monsoon & Winter post-rainy season',
+    nearestTransport: 'Paud Road EV Cab Route (45 km from Pune)',
+    tags: ['Mountains', 'lake', 'nature', 'Backwaters']
+  },
+  {
+    id: 'spot-pune-9',
+    name: 'Lonavala',
+    city: 'Lonavala',
+    state: 'Maharashtra',
+    category: 'Nature & Wildlife',
+    description: 'Premier Sahyadri hill station renowned for misty hills, Tiger Point, Bhushi Dam waterfalls, and scenic valley viewpoints.',
+    lat: 18.7557,
+    lng: 73.4091,
+    timings: '24 Hours',
+    entryFee: 0,
+    rating: 4.7,
+    reviewsCount: 65000,
+    ecoScore: 91,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning sunrise at Tiger Point',
+    nearestTransport: 'Lonavala Railway Station / Expressway Cab (65 km from Pune)',
+    tags: ['Hills', 'waterfalls', 'viewpoints', 'Hill station']
+  },
+  {
+    id: 'spot-pune-10',
+    name: 'Khandala',
+    city: 'Khandala',
+    state: 'Maharashtra',
+    category: 'Nature & Wildlife',
+    description: 'Scenic hill station overlooking the Bhor Ghat valley, Duke\'s Nose, and Amrutanjan Point with stunning cliffside vistas.',
+    lat: 18.7612,
+    lng: 73.3768,
+    timings: '24 Hours',
+    entryFee: 0,
+    rating: 4.6,
+    reviewsCount: 31000,
+    ecoScore: 92,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Early morning or sunset across the Bhor Ghat',
+    nearestTransport: 'Khandala Railway Station / Cab (70 km from Pune)',
+    tags: ['Hill station', 'viewpoints', 'Sahyadri Valley', 'Bhor Ghat']
+  },
+  {
+    id: 'spot-pune-11',
+    name: 'Lohagad Fort',
+    city: 'Lonavala',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'Iron fortress perched at 1,033m with iconic Vinchukata (scorpion tail) ridge, overlooking Buddhist rock-cut caves.',
+    lat: 18.7082,
+    lng: 73.4795,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 25,
+    rating: 4.8,
+    reviewsCount: 29000,
+    ecoScore: 96,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1571498664245-564556488339?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning 08:00 AM from Malavli base',
+    nearestTransport: 'Malavli Suburban Railway Station (65 km from Pune)',
+    tags: ['Trekking', 'fort', 'Vinchukata', 'Buddhist Caves']
+  },
+  {
+    id: 'spot-pune-12',
+    name: 'Panshet Dam',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'Vast reservoir offering kayaking, water scooters, speed boating, and peaceful picnic spots 50 km from Pune.',
+    lat: 18.3756,
+    lng: 73.6186,
+    timings: '09:00 AM - 06:00 PM',
+    entryFee: 30,
+    rating: 4.6,
+    reviewsCount: 22000,
+    ecoScore: 93,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Midday for watersports and lake breeze',
+    nearestTransport: 'Direct Cab via Sinhagad Road (50 km from Pune)',
+    tags: ['Water activities', 'nature', 'Boating', 'Resorts']
+  },
+  {
+    id: 'spot-pune-13',
+    name: 'Visapur Fort',
+    city: 'Lonavala',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'Twin mountain fortress to Lohagad, famous for its stone waterfall trek, historic bastions, and expansive plateau summit.',
+    lat: 18.7214,
+    lng: 73.4889,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 25,
+    rating: 4.7,
+    reviewsCount: 19500,
+    ecoScore: 97,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Monsoon waterfall trek from Malavli / Patan village',
+    nearestTransport: 'Malavli Railway Station / Cab (65 km from Pune)',
+    tags: ['Trekking', 'fort', 'Waterfall Steps', 'Plateau']
+  },
+  {
+    id: 'spot-pune-14',
+    name: 'Rajmachi Fort',
+    city: 'Lonavala',
+    state: 'Maharashtra',
+    category: 'Adventure & Trekking',
+    description: 'Strategic twin-citadel fort (Shrivardhan & Manaranjan) surrounded by dense Sahyadri forests, firefly sanctuaries, and ancient caves.',
+    lat: 18.8278,
+    lng: 73.3986,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 40,
+    rating: 4.8,
+    reviewsCount: 17800,
+    ecoScore: 98,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1605649487212-47bdab064df7?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Firefly festival (May-June) and winter trekking',
+    nearestTransport: 'Trek trail from Udhewadi base / Lonavala (80 km from Pune)',
+    tags: ['Trekking', 'Sahyadri scenery', 'Twin Citadel', 'Fireflies']
+  },
+  {
+    id: 'spot-pune-15',
+    name: 'Rajiv Gandhi Zoological Park',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Nature & Wildlife',
+    description: '130-acre modern zoological park and wildlife rescue center in Katraj with white tigers, leopards, elephant sanctuary, and snake park.',
+    lat: 18.4529,
+    lng: 73.8647,
+    timings: '09:30 AM - 05:00 PM (Closed Wed)',
+    entryFee: 40,
+    rating: 4.5,
+    reviewsCount: 35000,
+    ecoScore: 92,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1534177616072-ef7dc120449d?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning 10:00 AM for animal activity',
+    nearestTransport: 'Katraj Bus Terminal / PMPML (8 km from Pune)',
+    tags: ['Wildlife', 'family tourism', 'Katraj Zoo', 'Snake Park']
+  },
+  {
+    id: 'spot-pune-16',
+    name: 'ISKCON NVCC, Katraj',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Spiritual & Wellness',
+    description: 'Sprawling Radha Vrindavanchandra temple at Kondhwa-Katraj featuring red sandstone architecture, pure vegetarian dining, and Vedic cultural center.',
+    lat: 18.4485,
+    lng: 73.8824,
+    timings: '04:30 AM - 01:00 PM, 04:30 PM - 08:30 PM',
+    entryFee: 0,
+    rating: 4.9,
+    reviewsCount: 46000,
+    ecoScore: 94,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Evening sandhya aarti (07:00 PM)',
+    nearestTransport: 'Katraj-Kondhwa Road Auto / Cab (12 km from Pune)',
+    tags: ['Krishna temple', 'spiritual tourism', 'Vedic Center', 'Govindas']
+  },
+  {
+    id: 'spot-pune-17',
+    name: 'Swaminarayan Temple, Narhe',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Spiritual & Wellness',
+    description: 'Magnificent BAPS Hindu temple complex featuring intricately hand-carved pink sandstone, pristine gardens, and evening light exhibitions.',
+    lat: 18.4552,
+    lng: 73.8189,
+    timings: '06:00 AM - 08:30 PM',
+    entryFee: 0,
+    rating: 4.8,
+    reviewsCount: 28000,
+    ecoScore: 93,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Late afternoon and evening illumination',
+    nearestTransport: 'Mumbai-Bangalore Highway Narhe Bypass (15 km from Pune)',
+    tags: ['Hindu temple', 'architecture', 'spirituality', 'BAPS']
+  },
+  {
+    id: 'spot-pune-18',
+    name: 'Parvati Hill Temple',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Spiritual & Wellness',
+    description: 'Historic hilltop temple complex built in the 17th century by Peshwa Balaji Baji Rao, reached via 103 stone steps overlooking Pune city.',
+    lat: 18.4965,
+    lng: 73.8488,
+    timings: '05:00 AM - 08:00 PM',
+    entryFee: 0,
+    rating: 4.7,
+    reviewsCount: 32000,
+    ecoScore: 91,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Sunrise or sunset for 360-degree city panorama',
+    nearestTransport: 'Swargate Bus Terminal / Mitra Mandal Chowk (6 km from Pune)',
+    tags: ['Temple', 'city views', 'heritage', '103 Steps']
+  },
+  {
+    id: 'spot-pune-19',
+    name: 'Alandi',
+    city: 'Alandi',
+    state: 'Maharashtra',
+    category: 'Spiritual & Wellness',
+    description: 'Sacred pilgrimage town on the banks of Indrayani River, enshrining the Sanjeevan Samadhi of 13th-century saint Sant Dnyaneshwar.',
+    lat: 18.6775,
+    lng: 73.8964,
+    timings: '05:00 AM - 09:30 PM',
+    entryFee: 0,
+    rating: 4.8,
+    reviewsCount: 41000,
+    ecoScore: 90,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning Indrayani river ghat aarti',
+    nearestTransport: 'PMPML Alandi Direct Bus / Cab (25 km from Pune)',
+    tags: ['Sant Dnyaneshwar Samadhi', 'pilgrimage', 'Indrayani', 'Warkari']
+  },
+  {
+    id: 'spot-pune-20',
+    name: 'Dehu',
+    city: 'Dehu',
+    state: 'Maharashtra',
+    category: 'Spiritual & Wellness',
+    description: 'Spiritual shrine town of Sant Tukaram Maharaj on the Indrayani River, renowned for the Gatha Mandir, holy rock, and Warkari traditions.',
+    lat: 18.7188,
+    lng: 73.7686,
+    timings: '05:30 AM - 09:00 PM',
+    entryFee: 0,
+    rating: 4.8,
+    reviewsCount: 37000,
+    ecoScore: 91,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Morning meditation & Tukaram Gatha recitation',
+    nearestTransport: 'Dehu Road Railway Station / Cab (30 km from Pune)',
+    tags: ['Sant Tukaram Maharaj', 'pilgrimage', 'Gatha Mandir', 'Spiritual']
+  },
+  {
+    id: 'spot-pune-21',
+    name: 'Phoenix Mall of the Millennium',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Beach & Leisure',
+    description: 'Sprawling 1.1 million sq.ft luxury shopping, culinary, and entertainment destination in Wakad with 300+ international brands and IMAX multiplex.',
+    lat: 18.5991,
+    lng: 73.7602,
+    timings: '11:00 AM - 11:00 PM',
+    entryFee: 0,
+    rating: 4.7,
+    reviewsCount: 45000,
+    ecoScore: 89,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Afternoon & evening leisure, dining, and gaming',
+    nearestTransport: 'Wakad Bridge / Bangalore Highway Cab (15 km from Pune)',
+    tags: ['Shopping', 'food', 'entertainment', 'Luxury Mall']
+  },
+  {
+    id: 'spot-pune-22',
+    name: 'Imagicaa',
+    city: 'Khopoli',
+    state: 'Maharashtra',
+    category: 'Beach & Leisure',
+    description: 'World-class 130-acre themed wonderland with thrilling roller coasters, Nitro, deep space rides, indoor snow dome, and wave water park.',
+    lat: 18.7506,
+    lng: 73.2755,
+    timings: '10:30 AM - 07:00 PM',
+    entryFee: 1499,
+    rating: 4.7,
+    reviewsCount: 48000,
+    ecoScore: 89,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Full day trip from 10:30 AM to 06:30 PM',
+    nearestTransport: 'Mumbai-Pune Expressway Shuttle / Cab (90 km from Pune)',
+    tags: ['Theme park', 'rides', 'family entertainment', 'Water Park']
+  },
+  {
+    id: 'spot-pune-23',
+    name: 'Lal Mahal',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Heritage & Culture',
+    description: '1630 historic red palace where Chhatrapati Shivaji Maharaj spent his formative childhood and famously confronted Shaista Khan.',
+    lat: 18.5186,
+    lng: 73.8569,
+    timings: '09:00 AM - 01:00 PM, 04:00 PM - 08:00 PM',
+    entryFee: 10,
+    rating: 4.5,
+    reviewsCount: 16200,
+    ecoScore: 92,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Combined visit with Shaniwar Wada',
+    nearestTransport: 'Walk from Shaniwar Wada (3 km from Pune)',
+    tags: ['Shivaji Maharaj history', 'Palace', 'Heritage']
+  },
+  {
+    id: 'spot-pune-24',
+    name: 'Pashan Lake',
+    city: 'Pune',
+    state: 'Maharashtra',
+    category: 'Nature & Wildlife',
+    description: 'Peaceful man-made wetland sanctuary built during the British era, hosting over 50 species of resident and migratory waterfowl.',
+    lat: 18.5372,
+    lng: 73.7845,
+    timings: '06:00 AM - 06:00 PM',
+    entryFee: 0,
+    rating: 4.4,
+    reviewsCount: 12000,
+    ecoScore: 95,
+    isVerified: true,
+    imageUrl: 'https://images.unsplash.com/photo-1516214104703-d870798883c5?auto=format&fit=crop&w=800&q=80',
+    bestTimeToVisit: 'Sunrise birdwatching (06:30 AM)',
+    nearestTransport: 'Pashan-Sus Road Auto / Bus (10 km from Pune)',
+    tags: ['Birdwatching', 'nature', 'walking', 'Eco-lake']
+  }
+];
+
+// ----------------------------------------------------
+// 2. HOTELS DATASET (hotels.csv from SIH PS 26204)
+// ----------------------------------------------------
+export const MASTER_HOTELS: HotelItem[] = [
+  {
+    id: 'htl-1',
+    tourismSpot: 'Shaniwar Wada',
+    hotelName: 'Shantai Hotel',
+    distanceFromSpot: '1.5 km',
+    distanceKm: 1.5,
+    rating: 4.5,
+    pricePerNight: 2800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Free WiFi', 'Pure Veg Restaurant', 'Room Service', 'AC']
+  },
+  {
+    id: 'htl-2',
+    tourismSpot: 'Shaniwar Wada',
+    hotelName: 'Pride Premier Pune',
+    distanceFromSpot: '2.0 km',
+    distanceKm: 2.0,
+    rating: 4.7,
+    pricePerNight: 4200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Swimming Pool', 'Buffet Breakfast', 'Spa', 'Valet Parking']
+  },
+  {
+    id: 'htl-3',
+    tourismSpot: 'Sinhagad Fort',
+    hotelName: 'Sorina Hillside Resort',
+    distanceFromSpot: '3.8 km',
+    distanceKm: 3.8,
+    rating: 4.6,
+    pricePerNight: 3500,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Mountain View', 'Garden', 'Campfire', 'Local Maharashtrian Food']
+  },
+  {
+    id: 'htl-4',
+    tourismSpot: 'Sinhagad Fort',
+    hotelName: 'Wildernest Hilltop Resort',
+    distanceFromSpot: '5.9 km',
+    distanceKm: 5.9,
+    rating: 4.8,
+    pricePerNight: 4800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Infinity Pool', 'Trekking Guide', 'Valley View', 'Restaurant']
+  },
+  {
+    id: 'htl-5',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    hotelName: 'Poona Guest House',
+    distanceFromSpot: '0.1 km',
+    distanceKm: 0.1,
+    rating: 4.4,
+    pricePerNight: 1600,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Heritage Stay', 'Walking to Temple', 'Traditional Food']
+  },
+  {
+    id: 'htl-6',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    hotelName: 'Shantai Hotel',
+    distanceFromSpot: '1.7 km',
+    distanceKm: 1.7,
+    rating: 4.5,
+    pricePerNight: 2800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Free WiFi', 'Central Pune', 'Restaurant', 'AC']
+  },
+  {
+    id: 'htl-7',
+    tourismSpot: 'Aga Khan Palace',
+    hotelName: 'Hyatt Pune',
+    distanceFromSpot: '0.3 km',
+    distanceKm: 0.3,
+    rating: 4.9,
+    pricePerNight: 6500,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['5-Star Luxury', 'Spa', 'Multiple Restaurants', 'EV Charger']
+  },
+  {
+    id: 'htl-8',
+    tourismSpot: 'Aga Khan Palace',
+    hotelName: 'Magnus Nexstar Suites Kalyani Nagar',
+    distanceFromSpot: '0.4 km',
+    distanceKm: 0.4,
+    rating: 4.6,
+    pricePerNight: 3200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Suites', 'Kitchenette', 'Free WiFi', 'Gym']
+  },
+  {
+    id: 'htl-9',
+    tourismSpot: 'Khadakwasla Dam',
+    hotelName: 'SPOT ON 75667 Hotel Peacock Garden Lodge',
+    distanceFromSpot: '1.6 km',
+    distanceKm: 1.6,
+    rating: 4.3,
+    pricePerNight: 1500,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Lakeside View', 'Budget Friendly', 'Garden Dining']
+  },
+  {
+    id: 'htl-10',
+    tourismSpot: 'Khadakwasla Dam',
+    hotelName: 'Wildernest Hilltop Resort',
+    distanceFromSpot: '2.5 km',
+    distanceKm: 2.5,
+    rating: 4.8,
+    pricePerNight: 4800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Infinity Pool', 'Sunset Deck', 'Multi-Cuisine']
+  },
+  {
+    id: 'htl-11',
+    tourismSpot: 'Rajgad Fort',
+    hotelName: 'Rajgad Resort / nearby stays',
+    distanceFromSpot: '5 km',
+    distanceKm: 5.0,
+    rating: 4.5,
+    pricePerNight: 2400,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Fort View', 'Trek Guide Support', 'Homestyle Food']
+  },
+  {
+    id: 'htl-12',
+    tourismSpot: 'Rajgad Fort',
+    hotelName: 'Rajgad Valley Resort',
+    distanceFromSpot: '8 km',
+    distanceKm: 8.0,
+    rating: 4.6,
+    pricePerNight: 3200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Valley Cottages', 'Campfire', 'Outdoor Activities']
+  },
+  {
+    id: 'htl-13',
+    tourismSpot: 'Torna Fort',
+    hotelName: 'Hilltop Heaven Resort',
+    distanceFromSpot: '3.1 km',
+    distanceKm: 3.1,
+    rating: 4.6,
+    pricePerNight: 2900,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Mountain Panorama', 'Trek Logistics', 'Fresh Local Food']
+  },
+  {
+    id: 'htl-14',
+    tourismSpot: 'Torna Fort',
+    hotelName: 'Cosmicstays Rajgad Vista Stay Play',
+    distanceFromSpot: '8.5 km',
+    distanceKm: 8.5,
+    rating: 4.7,
+    pricePerNight: 3800,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Villa Stay', 'Games Room', 'Stargazing Balcony']
+  },
+  {
+    id: 'htl-15',
+    tourismSpot: 'Mulshi Dam',
+    hotelName: 'Malhar Machi Mountain Resorts',
+    distanceFromSpot: '1.0 km',
+    distanceKm: 1.0,
+    rating: 4.9,
+    pricePerNight: 7800,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Eco Agro-Tourism', 'Infinity Pool', 'Organic Dining', 'Herbal Spa']
+  },
+  {
+    id: 'htl-16',
+    tourismSpot: 'Mulshi Dam',
+    hotelName: 'Raanjan Hills Resort',
+    distanceFromSpot: '2.4 km',
+    distanceKm: 2.4,
+    rating: 4.6,
+    pricePerNight: 3900,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Lake View', 'Lawn & Campfire', 'Barbeque']
+  },
+  {
+    id: 'htl-17',
+    tourismSpot: 'Lonavala',
+    hotelName: 'Radisson Resort & Spa Lonavala',
+    distanceFromSpot: '3 km',
+    distanceKm: 3.0,
+    rating: 4.8,
+    pricePerNight: 6200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Luxury Spa', 'Heated Pool', 'Kids Play Zone', 'Banquet']
+  },
+  {
+    id: 'htl-18',
+    tourismSpot: 'Lonavala',
+    hotelName: 'Regenta SGS Greenotel - Lonavala',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    rating: 4.6,
+    pricePerNight: 4100,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Eco-Certified', 'Pool', 'Restaurant', 'Free Parking']
+  },
+  {
+    id: 'htl-19',
+    tourismSpot: 'Khandala',
+    hotelName: 'Della Resorts',
+    distanceFromSpot: '3 km',
+    distanceKm: 3.0,
+    rating: 4.9,
+    pricePerNight: 8500,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Adventure Park Access', '24-hr Dining', 'Luxury Villas', 'Pet Friendly']
+  },
+  {
+    id: 'htl-20',
+    tourismSpot: 'Khandala',
+    hotelName: 'Radisson Resort & Spa Lonavala',
+    distanceFromSpot: '5 km',
+    distanceKm: 5.0,
+    rating: 4.8,
+    pricePerNight: 6200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Heated Pool', 'Spa Treatments', 'Buffet Dining']
+  },
+  {
+    id: 'htl-21',
+    tourismSpot: 'Lohagad Fort',
+    hotelName: 'The Chavni',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    rating: 4.7,
+    pricePerNight: 3200,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Glamping Tents', 'Fort View', 'Stargazing', 'BBQ']
+  },
+  {
+    id: 'htl-22',
+    tourismSpot: 'Lohagad Fort',
+    hotelName: 'The Voyage Zen Oasis',
+    distanceFromSpot: '4 km',
+    distanceKm: 4.0,
+    rating: 4.6,
+    pricePerNight: 3600,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Zen Gardens', 'Yoga Space', 'Organic Food']
+  },
+  {
+    id: 'htl-23',
+    tourismSpot: 'Panshet Dam',
+    hotelName: 'MTDC Resort, Panshet',
+    distanceFromSpot: '0.7 km',
+    distanceKm: 0.7,
+    rating: 4.3,
+    pricePerNight: 2200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Government Certified', 'Lake View Cottages', 'Water Sports Access']
+  },
+  {
+    id: 'htl-24',
+    tourismSpot: 'Panshet Dam',
+    hotelName: 'The Hosteller Panshet, Lakeview',
+    distanceFromSpot: '3.0 km',
+    distanceKm: 3.0,
+    rating: 4.7,
+    pricePerNight: 1800,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Backpacker Dorms & Private Rooms', 'Lakeview Deck', 'Café']
+  },
+  {
+    id: 'htl-25',
+    tourismSpot: 'Visapur Fort',
+    hotelName: 'The Chavni',
+    distanceFromSpot: '1.1 km',
+    distanceKm: 1.1,
+    rating: 4.7,
+    pricePerNight: 3200,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Glamping Tents', 'Fort Views', 'Guided Treks']
+  },
+  {
+    id: 'htl-26',
+    tourismSpot: 'Visapur Fort',
+    hotelName: 'The Voyage Zen Oasis',
+    distanceFromSpot: '3.2 km',
+    distanceKm: 3.2,
+    rating: 4.6,
+    pricePerNight: 3600,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Eco Retreat', 'Bonfire', 'Valley Walks']
+  },
+  {
+    id: 'htl-27',
+    tourismSpot: 'Rajmachi Fort',
+    hotelName: 'Trek Rajmachi Base Camp',
+    distanceFromSpot: '0.6 km',
+    distanceKm: 0.6,
+    rating: 4.5,
+    pricePerNight: 1200,
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Village Homestay', 'Traditional Pithla Bhakri', 'Trek Guide']
+  },
+  {
+    id: 'htl-28',
+    tourismSpot: 'Rajmachi Fort',
+    hotelName: 'Upper Deck Resort',
+    distanceFromSpot: '5.1 km',
+    distanceKm: 5.1,
+    rating: 4.8,
+    pricePerNight: 5400,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Cloud View Deck', 'Pool', 'Fine Dining']
+  },
+  {
+    id: 'htl-29',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    hotelName: 'Hotel Utsav Deluxe',
+    distanceFromSpot: '4.0 km',
+    distanceKm: 4.0,
+    rating: 4.4,
+    pricePerNight: 2100,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['AC Rooms', 'Multi-Cuisine Restaurant', 'Free Parking']
+  },
+  {
+    id: 'htl-30',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    hotelName: 'Deccan Pavilion, Katraj',
+    distanceFromSpot: '5.7 km',
+    distanceKm: 5.7,
+    rating: 4.5,
+    pricePerNight: 2600,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Highway Access', 'Buffet Breakfast', 'Bar & Dining']
+  },
+  {
+    id: 'htl-31',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    hotelName: 'Hotel HMR Royal Inn',
+    distanceFromSpot: '4 km',
+    distanceKm: 4.0,
+    rating: 4.4,
+    pricePerNight: 2200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Spiritual Atmosphere', 'Pure Veg', 'Free WiFi']
+  },
+  {
+    id: 'htl-32',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    hotelName: "Hotel Nirmal's Executive",
+    distanceFromSpot: '5 km',
+    distanceKm: 5.0,
+    rating: 4.5,
+    pricePerNight: 2700,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Conference Hall', 'Room Service', 'Airport Shuttle']
+  },
+  {
+    id: 'htl-33',
+    tourismSpot: 'Swaminarayan Temple, Narhe',
+    hotelName: 'OYO Hotel Aarambh',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    rating: 4.3,
+    pricePerNight: 1400,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Walking to Temple', 'AC Rooms', 'Budget Stay']
+  },
+  {
+    id: 'htl-34',
+    tourismSpot: 'Swaminarayan Temple, Narhe',
+    hotelName: 'Wow Executive Lodging & Boarding',
+    distanceFromSpot: '3 km',
+    distanceKm: 3.0,
+    rating: 4.4,
+    pricePerNight: 1900,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Highway Proximity', 'Family Rooms', '24h Desk']
+  },
+  {
+    id: 'htl-35',
+    tourismSpot: 'Parvati Hill Temple',
+    hotelName: 'Hotel Utsav Deluxe',
+    distanceFromSpot: '2.0 km',
+    distanceKm: 2.0,
+    rating: 4.4,
+    pricePerNight: 2100,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['City Center', 'Pure Veg Food', 'WiFi']
+  },
+  {
+    id: 'htl-36',
+    tourismSpot: 'Parvati Hill Temple',
+    hotelName: 'Gandharv Residency',
+    distanceFromSpot: '2.3 km',
+    distanceKm: 2.3,
+    rating: 4.5,
+    pricePerNight: 2800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['JM Road Access', 'Restaurant', 'Executive Suites']
+  },
+  {
+    id: 'htl-37',
+    tourismSpot: 'Alandi',
+    hotelName: 'Akshay Lodge',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    rating: 4.2,
+    pricePerNight: 1200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Pilgrim Lodging', 'River Indrayani View', 'Hot Water']
+  },
+  {
+    id: 'htl-38',
+    tourismSpot: 'Alandi',
+    hotelName: 'OYO Ashoka Hotel Lodge Marriage Hall',
+    distanceFromSpot: '1 km',
+    distanceKm: 1.0,
+    rating: 4.3,
+    pricePerNight: 1600,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['AC Family Rooms', 'Parking', 'Temple Proximity']
+  },
+  {
+    id: 'htl-39',
+    tourismSpot: 'Dehu',
+    hotelName: 'Local hotels/lodges near Dehu Temple',
+    distanceFromSpot: '1–3 km',
+    distanceKm: 2.0,
+    rating: 4.3,
+    pricePerNight: 1300,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Gatha Mandir Walk', 'Maharashtrian Meals', 'Family Stays']
+  },
+  {
+    id: 'htl-40',
+    tourismSpot: 'Dehu',
+    hotelName: 'Hotels near Dehu Road',
+    distanceFromSpot: '4–6 km',
+    distanceKm: 5.0,
+    rating: 4.4,
+    pricePerNight: 2000,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Railway Connectivity', 'Expressway Access', 'Room Service']
+  },
+  {
+    id: 'htl-41',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    hotelName: 'The Orchid Hotel Pune',
+    distanceFromSpot: '8 km',
+    distanceKm: 8.0,
+    rating: 4.7,
+    pricePerNight: 5200,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Eco 5-Star', 'Pool', 'Multiple Cuisines', 'Spa']
+  },
+  {
+    id: 'htl-42',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    hotelName: 'Radisson Blu Pune Hinjawadi',
+    distanceFromSpot: '7 km',
+    distanceKm: 7.0,
+    rating: 4.8,
+    pricePerNight: 5800,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Rooftop Pool', 'Luxury Suites', 'Fine Dining']
+  },
+  {
+    id: 'htl-43',
+    tourismSpot: 'Imagicaa',
+    hotelName: 'Novotel Imagicaa Khopoli',
+    distanceFromSpot: '0.2 km',
+    distanceKm: 0.2,
+    rating: 4.8,
+    pricePerNight: 5500,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Direct Park Access', 'Theme Rooms', 'Pool', 'Breakfast Included']
+  },
+  {
+    id: 'htl-44',
+    tourismSpot: 'Imagicaa',
+    hotelName: 'Radisson Resort & Spa Khopoli',
+    distanceFromSpot: '0.3 km',
+    distanceKm: 0.3,
+    rating: 4.7,
+    pricePerNight: 6100,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Resort Living', 'Family Play Zone', 'Spa', 'Express Shuttle']
+  },
+  {
+    id: 'htl-45',
+    tourismSpot: 'Lal Mahal',
+    hotelName: 'Shantai Hotel',
+    distanceFromSpot: '1.5 km',
+    distanceKm: 1.5,
+    rating: 4.5,
+    pricePerNight: 2800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Heritage Heart of Pune', 'AC Rooms', 'Pure Veg']
+  },
+  {
+    id: 'htl-46',
+    tourismSpot: 'Lal Mahal',
+    hotelName: 'Pride Premier Pune',
+    distanceFromSpot: '2.0 km',
+    distanceKm: 2.0,
+    rating: 4.7,
+    pricePerNight: 4200,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Luxury Amenities', 'Breakfast Buffet', 'Valet']
+  },
+  {
+    id: 'htl-47',
+    tourismSpot: 'Pashan Lake',
+    hotelName: 'OYO 7673 The Ark Apartment Hotel',
+    distanceFromSpot: '0.9 km',
+    distanceKm: 0.9,
+    rating: 4.3,
+    pricePerNight: 1900,
+    image: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Lake View Balcony', 'WiFi', 'Kitchenette']
+  },
+  {
+    id: 'htl-48',
+    tourismSpot: 'Pashan Lake',
+    hotelName: 'Hamlet by Daily Stays',
+    distanceFromSpot: '2.3 km',
+    distanceKm: 2.3,
+    rating: 4.6,
+    pricePerNight: 2800,
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    amenities: ['Baner Proximity', 'Boutique Stay', 'Garden Cafe']
+  }
+];
+
+// ----------------------------------------------------
+// 3. RESTAURANTS DATASET (restaurants.csv from SIH PS 26204)
+// ----------------------------------------------------
+export const MASTER_RESTAURANTS: RestaurantItem[] = [
+  {
+    id: 'rst-1',
+    tourismSpot: 'Shaniwar Wada',
+    restaurantName: 'Sudamache Pohe',
+    distanceFromSpot: '0.1 km',
+    distanceKm: 0.1,
+    cuisine: 'Authentic Maharashtrian Breakfast',
+    priceForTwo: 120,
+    rating: 4.8,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-2',
+    tourismSpot: 'Shaniwar Wada',
+    restaurantName: 'Hotel Aatithya',
+    distanceFromSpot: '0.7 km',
+    distanceKm: 0.7,
+    cuisine: 'Pure Veg North & South Indian',
+    priceForTwo: 350,
+    rating: 4.4,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-3',
+    tourismSpot: 'Shaniwar Wada',
+    restaurantName: "Shahji's Parantha House",
+    distanceFromSpot: '0.8 km',
+    distanceKm: 0.8,
+    cuisine: 'Authentic Stuffed Paranthas & Lassi',
+    priceForTwo: 400,
+    rating: 4.7,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-4',
+    tourismSpot: 'Shaniwar Wada',
+    restaurantName: 'Maratha Samrat',
+    distanceFromSpot: '1.8 km',
+    distanceKm: 1.8,
+    cuisine: 'Royal Kolhapuri Mutton & Chicken Thali',
+    priceForTwo: 650,
+    rating: 4.9,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-5',
+    tourismSpot: 'Sinhagad Fort',
+    restaurantName: 'Hotel Sagara Prime',
+    distanceFromSpot: '3.8 km',
+    distanceKm: 3.8,
+    cuisine: 'Authentic Pithla Bhakri & Kanda Bhajji',
+    priceForTwo: 300,
+    rating: 4.7,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-6',
+    tourismSpot: 'Sinhagad Fort',
+    restaurantName: 'Hotel Swagat Family Restaurant',
+    distanceFromSpot: '4.0 km',
+    distanceKm: 4.0,
+    cuisine: 'Maharashtrian & North Indian Family Meals',
+    priceForTwo: 450,
+    rating: 4.5,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-7',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    restaurantName: 'Cafe GoodLuck',
+    distanceFromSpot: '1.5 km',
+    distanceKm: 1.5,
+    cuisine: 'Legendary Bun Maska, Irani Chai & Omelettes',
+    priceForTwo: 250,
+    rating: 4.8,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-8',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    restaurantName: 'Moreshwar Foodee Corner',
+    distanceFromSpot: '0.6 km',
+    distanceKm: 0.6,
+    cuisine: 'Fast Food, Maharashtrian Snacks & Juices',
+    priceForTwo: 200,
+    rating: 4.4,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-9',
+    tourismSpot: 'Aga Khan Palace',
+    restaurantName: 'Barbeque Nation - Kalyani Nagar',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    cuisine: 'Live Grill Buffet & Desserts',
+    priceForTwo: 1400,
+    rating: 4.7,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-10',
+    tourismSpot: 'Aga Khan Palace',
+    restaurantName: 'Saffron Restaurant - North Indian',
+    distanceFromSpot: '1.0 km',
+    distanceKm: 1.0,
+    cuisine: 'Rich North Indian Curries & Biryani',
+    priceForTwo: 800,
+    rating: 4.6,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-11',
+    tourismSpot: 'Khadakwasla Dam',
+    restaurantName: 'Hotel Mejwani Pure Veg',
+    distanceFromSpot: '1.2 km',
+    distanceKm: 1.2,
+    cuisine: 'Authentic Maharashtrian Thali & Snacks',
+    priceForTwo: 350,
+    rating: 4.5,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-12',
+    tourismSpot: 'Khadakwasla Dam',
+    restaurantName: 'Mircho Misal',
+    distanceFromSpot: '1.5 km',
+    distanceKm: 1.5,
+    cuisine: 'Spicy Puneri Misal Pav & Buttermilk',
+    priceForTwo: 200,
+    rating: 4.6,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-13',
+    tourismSpot: 'Rajgad Fort',
+    restaurantName: 'Rajgad Valley Restaurant',
+    distanceFromSpot: '5 km',
+    distanceKm: 5.0,
+    cuisine: 'Village Pithla Bhakri, Thecha & Gavran Chicken',
+    priceForTwo: 400,
+    rating: 4.7,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-14',
+    tourismSpot: 'Torna Fort',
+    restaurantName: 'Torna Valley Restaurant',
+    distanceFromSpot: '4 km',
+    distanceKm: 4.0,
+    cuisine: 'Trekker Maharashtrian Thalis & Fresh Taak',
+    priceForTwo: 350,
+    rating: 4.6,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-15',
+    tourismSpot: 'Mulshi Dam',
+    restaurantName: "Basho's Resort & Restaurant",
+    distanceFromSpot: '5.6 km',
+    distanceKm: 5.6,
+    cuisine: 'Lakeview Multi-Cuisine & Sizzlers',
+    priceForTwo: 900,
+    rating: 4.6,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-16',
+    tourismSpot: 'Lonavala',
+    restaurantName: 'Mapro Garden Restaurant',
+    distanceFromSpot: '7 km',
+    distanceKm: 7.0,
+    cuisine: 'Fresh Strawberry Cream, Wood-fired Pizza & Sandwiches',
+    priceForTwo: 600,
+    rating: 4.8,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-17',
+    tourismSpot: 'Khandala',
+    restaurantName: 'Della Villa Bistro',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    cuisine: 'Continental, Italian & Pan-Asian',
+    priceForTwo: 1600,
+    rating: 4.9,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-18',
+    tourismSpot: 'Lohagad Fort',
+    restaurantName: 'The Chavni & Lohagad Wadi Local Food Stalls',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    cuisine: 'Village Pithla Bhakri, Buttermilk & Sweet Corn',
+    priceForTwo: 250,
+    rating: 4.7,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-19',
+    tourismSpot: 'Panshet Dam',
+    restaurantName: 'MTDC Panshet Restaurant',
+    distanceFromSpot: '1 km',
+    distanceKm: 1.0,
+    cuisine: 'Traditional Maharashtrian Fish & Veg Thali',
+    priceForTwo: 450,
+    rating: 4.5,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-20',
+    tourismSpot: 'Visapur Fort',
+    restaurantName: 'Malavli Local Restaurants & The Chavni',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    cuisine: 'Trekker Breakfast, Pohe, Misal & Tea',
+    priceForTwo: 220,
+    rating: 4.6,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-21',
+    tourismSpot: 'Rajmachi Fort',
+    restaurantName: 'Udhewadi Village Restaurants & Food Stalls',
+    distanceFromSpot: '1 km',
+    distanceKm: 1.0,
+    cuisine: 'Authentic Village Cooking & Hot Pithla',
+    priceForTwo: 250,
+    rating: 4.8,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-22',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    restaurantName: 'Hotel Utsav Deluxe Restaurant',
+    distanceFromSpot: '4 km',
+    distanceKm: 4.0,
+    cuisine: 'North & South Indian Pure Veg Dining',
+    priceForTwo: 400,
+    rating: 4.4,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-23',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    restaurantName: "Govinda's - International Chain of Restaurant",
+    distanceFromSpot: '0.1 km',
+    distanceKm: 0.1,
+    cuisine: 'Pure Sattvic Indian, Continental & Bakery',
+    priceForTwo: 500,
+    rating: 4.9,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-24',
+    tourismSpot: 'Swaminarayan Temple, Narhe',
+    restaurantName: 'Narayan Dining & Shreeji Pure Veg',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    cuisine: 'Authentic Gujarati & Rajasthani Unlimited Thali',
+    priceForTwo: 600,
+    rating: 4.8,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-25',
+    tourismSpot: 'Parvati Hill Temple',
+    restaurantName: 'The Sky Kitchen & Banquets',
+    distanceFromSpot: '2.3 km',
+    distanceKm: 2.3,
+    cuisine: 'Rooftop Multi-Cuisine Dining',
+    priceForTwo: 850,
+    rating: 4.6,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-26',
+    tourismSpot: 'Alandi',
+    restaurantName: 'Prasad & Local Maharashtrian Restaurants',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    cuisine: 'Sattvic Pilgrim Meals, Puran Poli & Thali',
+    priceForTwo: 200,
+    rating: 4.7,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-27',
+    tourismSpot: 'Dehu',
+    restaurantName: 'Dehu Gatha Mandir Pilgrim Bhojanalaya',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    cuisine: 'Traditional Maharashtrian Prasad Meals',
+    priceForTwo: 180,
+    rating: 4.8,
+    isPureVeg: true
+  },
+  {
+    id: 'rst-28',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    restaurantName: 'Restaurants & Food Court inside Phoenix Mall',
+    distanceFromSpot: '0 km',
+    distanceKm: 0.0,
+    cuisine: 'Pan-Asian, Italian, Gourmet Burgers & Cafe',
+    priceForTwo: 900,
+    rating: 4.8,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-29',
+    tourismSpot: 'Imagicaa',
+    restaurantName: 'Novotel Imagicaa Restaurant & Food Court',
+    distanceFromSpot: '0.2 km',
+    distanceKm: 0.2,
+    cuisine: 'World Cuisines, Italian Pizzas & Indian Buffet',
+    priceForTwo: 1100,
+    rating: 4.7,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-30',
+    tourismSpot: 'Lal Mahal',
+    restaurantName: 'Sudamache Pohe & Maratha Samrat',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    cuisine: 'Traditional Puneri Breakfast & Royal Thalis',
+    priceForTwo: 250,
+    rating: 4.8,
+    isPureVeg: false
+  },
+  {
+    id: 'rst-31',
+    tourismSpot: 'Pashan Lake',
+    restaurantName: 'Café & Restaurant Options near Baner',
+    distanceFromSpot: '1.0 km',
+    distanceKm: 1.0,
+    cuisine: 'Artisan Coffee, Pastas & Healthy Salads',
+    priceForTwo: 700,
+    rating: 4.7,
+    isPureVeg: false
+  }
+];
+
+// ----------------------------------------------------
+// 4. ENTERTAINMENT ACTIVITIES DATASET (entertainments.csv)
+// ----------------------------------------------------
+export const MASTER_ENTERTAINMENTS: EntertainmentItem[] = [
+  {
+    id: 'ent-1',
+    tourismSpot: 'Shaniwar Wada',
+    entertainmentPlace: 'Seven Wonders Dream Park',
+    distanceFromSpot: '3.0 km',
+    distanceKm: 3.0,
+    category: 'Miniature Monuments Park & 4D Cinema',
+    approxEntryFee: 50,
+    rating: 4.6
+  },
+  {
+    id: 'ent-2',
+    tourismSpot: 'Shaniwar Wada',
+    entertainmentPlace: 'The Pavillion Mall & IMAX',
+    distanceFromSpot: '2.9 km',
+    distanceKm: 2.9,
+    category: 'Shopping, Arcade Gaming & Cinema',
+    approxEntryFee: 0,
+    rating: 4.8
+  },
+  {
+    id: 'ent-3',
+    tourismSpot: 'Sinhagad Fort',
+    entertainmentPlace: 'Khadakwasla Dam Water Sports & Sunset',
+    distanceFromSpot: '12 km',
+    distanceKm: 12.0,
+    category: 'Water Sports & Sunset Promenade',
+    approxEntryFee: 150,
+    rating: 4.7
+  },
+  {
+    id: 'ent-4',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    entertainmentPlace: 'Laxmi Road Traditional Bazaars & Darshan Museum',
+    distanceFromSpot: '0.8 km',
+    distanceKm: 0.8,
+    category: 'Ethnic Shopping & Cultural Light Show',
+    approxEntryFee: 0,
+    rating: 4.8
+  },
+  {
+    id: 'ent-5',
+    tourismSpot: 'Aga Khan Palace',
+    entertainmentPlace: 'Phoenix Marketcity Pune & Osho Teerth Park',
+    distanceFromSpot: '2.5 km',
+    distanceKm: 2.5,
+    category: 'Mall Entertainment, Bowling & Zen Gardens',
+    approxEntryFee: 0,
+    rating: 4.8
+  },
+  {
+    id: 'ent-6',
+    tourismSpot: 'Rajgad Fort',
+    entertainmentPlace: 'Gunjavane Dam & Torna Fort Circuit Trek',
+    distanceFromSpot: '8 km',
+    distanceKm: 8.0,
+    category: 'Adventure Trekking & Camping',
+    approxEntryFee: 100,
+    rating: 4.9
+  },
+  {
+    id: 'ent-7',
+    tourismSpot: 'Mulshi Dam',
+    entertainmentPlace: 'Mulshi Backwaters Viewpoint & Tamhini Ghat',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    category: 'Nature Photography & Monsoon Waterfall Drives',
+    approxEntryFee: 0,
+    rating: 4.9
+  },
+  {
+    id: 'ent-8',
+    tourismSpot: 'Lonavala',
+    entertainmentPlace: 'Della Adventure Park & Imagicaa Theme Park',
+    distanceFromSpot: '6 km',
+    distanceKm: 6.0,
+    category: 'Bungee Jumping, Flying Fox & Roller Coasters',
+    approxEntryFee: 1750,
+    rating: 4.9
+  },
+  {
+    id: 'ent-9',
+    tourismSpot: 'Khandala',
+    entertainmentPlace: 'Khandala Ghat View Point & Della Adventure',
+    distanceFromSpot: '0.5 km',
+    distanceKm: 0.5,
+    category: 'Cliffside Sightseeing & High-Ropes Course',
+    approxEntryFee: 0,
+    rating: 4.8
+  },
+  {
+    id: 'ent-10',
+    tourismSpot: 'Lohagad Fort',
+    entertainmentPlace: 'Visapur Fort & Bhaja Buddhist Rock Caves',
+    distanceFromSpot: '1.2 km',
+    distanceKm: 1.2,
+    category: 'Ancient Heritage Caves & Twin-Fort Exploration',
+    approxEntryFee: 25,
+    rating: 4.8
+  },
+  {
+    id: 'ent-11',
+    tourismSpot: 'Panshet Dam',
+    entertainmentPlace: 'Panshet Boating Club & Krishnai Water Park',
+    distanceFromSpot: '1 km',
+    distanceKm: 1.0,
+    category: 'Kayaking, Speedboat Rides & Water Slides',
+    approxEntryFee: 300,
+    rating: 4.6
+  },
+  {
+    id: 'ent-12',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    entertainmentPlace: 'Katraj Snake Park & Animal Safari',
+    distanceFromSpot: '0 km',
+    distanceKm: 0.0,
+    category: 'Wildlife Exhibit & Eco Zoo Tour',
+    approxEntryFee: 40,
+    rating: 4.6
+  },
+  {
+    id: 'ent-13',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    entertainmentPlace: 'Pune Snake Park & Flying Panda Theme Park',
+    distanceFromSpot: '3 km',
+    distanceKm: 3.0,
+    category: 'Trampoline Park, VR Gaming & Zoo',
+    approxEntryFee: 350,
+    rating: 4.7
+  },
+  {
+    id: 'ent-14',
+    tourismSpot: 'Parvati Hill Temple',
+    entertainmentPlace: 'Seven Wonders Dream Park & Sarasbaug Garden',
+    distanceFromSpot: '2 km',
+    distanceKm: 2.0,
+    category: 'Peshwa Memorial, Historic Lotus Pond & 4D Park',
+    approxEntryFee: 50,
+    rating: 4.7
+  },
+  {
+    id: 'ent-15',
+    tourismSpot: 'Alandi',
+    entertainmentPlace: 'Nova Fun Zone & Appu Ghar Nigdi',
+    distanceFromSpot: '3 km',
+    distanceKm: 3.0,
+    category: 'Trampoline Arena & Amusement Rides',
+    approxEntryFee: 300,
+    rating: 4.6
+  },
+  {
+    id: 'ent-16',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    entertainmentPlace: 'Indoor Gaming Zone, Timezone & Cinema Multiplex',
+    distanceFromSpot: '0 km',
+    distanceKm: 0.0,
+    category: 'Arcade VR, Bowling, Laser Tag & Movies',
+    approxEntryFee: 0,
+    rating: 4.9
+  },
+  {
+    id: 'ent-17',
+    tourismSpot: 'Imagicaa',
+    entertainmentPlace: 'Imagicaa Theme Park, Water Park & Snow Dome',
+    distanceFromSpot: '0 km',
+    distanceKm: 0.0,
+    category: 'International Roller Coasters & Wave Lagoon',
+    approxEntryFee: 1499,
+    rating: 4.8
+  },
+  {
+    id: 'ent-18',
+    tourismSpot: 'Pashan Lake',
+    entertainmentPlace: 'Gram Sanskruti Udyan & The Pavillion Mall',
+    distanceFromSpot: '4 km',
+    distanceKm: 4.0,
+    category: 'Village Heritage Village Park & Cinema',
+    approxEntryFee: 50,
+    rating: 4.6
+  }
+];
+
+// ----------------------------------------------------
+// 5. TAXI FARES & TRANSPORT DATASET (taxis.csv - 24 spots)
+// ----------------------------------------------------
+export const MASTER_TAXIS: TaxiRoute[] = [
+  {
+    id: 'tax-1',
+    tourismSpot: 'Shaniwar Wada',
+    distanceFromPune: '0–3 km',
+    distanceKm: 2.5,
+    approxTaxiFare: '₹100–₹150',
+    fareAmount: 120,
+    bestTravelOption: 'Taxi / Auto'
+  },
+  {
+    id: 'tax-2',
+    tourismSpot: 'Sinhagad Fort',
+    distanceFromPune: '30 km',
+    distanceKm: 30.0,
+    approxTaxiFare: '₹360',
+    fareAmount: 360,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-3',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    distanceFromPune: '3 km',
+    distanceKm: 3.0,
+    approxTaxiFare: '₹100–₹150',
+    fareAmount: 120,
+    bestTravelOption: 'Taxi / Auto'
+  },
+  {
+    id: 'tax-4',
+    tourismSpot: 'Aga Khan Palace',
+    distanceFromPune: '6 km',
+    distanceKm: 6.0,
+    approxTaxiFare: '₹150–₹200',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-5',
+    tourismSpot: 'Khadakwasla Dam',
+    distanceFromPune: '20 km',
+    distanceKm: 20.0,
+    approxTaxiFare: '₹240',
+    fareAmount: 240,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-6',
+    tourismSpot: 'Rajgad Fort',
+    distanceFromPune: '60 km',
+    distanceKm: 60.0,
+    approxTaxiFare: '₹720',
+    fareAmount: 720,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-7',
+    tourismSpot: 'Torna Fort',
+    distanceFromPune: '65 km',
+    distanceKm: 65.0,
+    approxTaxiFare: '₹780',
+    fareAmount: 780,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-8',
+    tourismSpot: 'Mulshi Dam',
+    distanceFromPune: '45 km',
+    distanceKm: 45.0,
+    approxTaxiFare: '₹540',
+    fareAmount: 540,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-9',
+    tourismSpot: 'Lonavala',
+    distanceFromPune: '65 km',
+    distanceKm: 65.0,
+    approxTaxiFare: '₹780',
+    fareAmount: 780,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-10',
+    tourismSpot: 'Khandala',
+    distanceFromPune: '70 km',
+    distanceKm: 70.0,
+    approxTaxiFare: '₹840',
+    fareAmount: 840,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-11',
+    tourismSpot: 'Lohagad Fort',
+    distanceFromPune: '65 km',
+    distanceKm: 65.0,
+    approxTaxiFare: '₹780',
+    fareAmount: 780,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-12',
+    tourismSpot: 'Panshet Dam',
+    distanceFromPune: '50 km',
+    distanceKm: 50.0,
+    approxTaxiFare: '₹600',
+    fareAmount: 600,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-13',
+    tourismSpot: 'Visapur Fort',
+    distanceFromPune: '65 km',
+    distanceKm: 65.0,
+    approxTaxiFare: '₹780',
+    fareAmount: 780,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-14',
+    tourismSpot: 'Rajmachi Fort',
+    distanceFromPune: '80 km',
+    distanceKm: 80.0,
+    approxTaxiFare: '₹960',
+    fareAmount: 960,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-15',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    distanceFromPune: '8 km',
+    distanceKm: 8.0,
+    approxTaxiFare: '₹150–₹200',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Auto'
+  },
+  {
+    id: 'tax-16',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    distanceFromPune: '12 km',
+    distanceKm: 12.0,
+    approxTaxiFare: '₹150–₹200',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-17',
+    tourismSpot: 'Swaminarayan Temple, Narhe',
+    distanceFromPune: '15 km',
+    distanceKm: 15.0,
+    approxTaxiFare: '₹180',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-18',
+    tourismSpot: 'Parvati Hill Temple',
+    distanceFromPune: '6 km',
+    distanceKm: 6.0,
+    approxTaxiFare: '₹150–₹200',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Auto'
+  },
+  {
+    id: 'tax-19',
+    tourismSpot: 'Alandi',
+    distanceFromPune: '25 km',
+    distanceKm: 25.0,
+    approxTaxiFare: '₹300',
+    fareAmount: 300,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-20',
+    tourismSpot: 'Dehu',
+    distanceFromPune: '30 km',
+    distanceKm: 30.0,
+    approxTaxiFare: '₹360',
+    fareAmount: 360,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-21',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    distanceFromPune: '15 km',
+    distanceKm: 15.0,
+    approxTaxiFare: '₹180',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-22',
+    tourismSpot: 'Imagicaa',
+    distanceFromPune: '90 km',
+    distanceKm: 90.0,
+    approxTaxiFare: '₹1,080',
+    fareAmount: 1080,
+    bestTravelOption: 'Taxi / Cab'
+  },
+  {
+    id: 'tax-23',
+    tourismSpot: 'Lal Mahal',
+    distanceFromPune: '3 km',
+    distanceKm: 3.0,
+    approxTaxiFare: '₹100–₹150',
+    fareAmount: 120,
+    bestTravelOption: 'Taxi / Auto'
+  },
+  {
+    id: 'tax-24',
+    tourismSpot: 'Pashan Lake',
+    distanceFromPune: '10 km',
+    distanceKm: 10.0,
+    approxTaxiFare: '₹150–₹200',
+    fareAmount: 180,
+    bestTravelOption: 'Taxi / Cab'
+  }
+];
+
+// ----------------------------------------------------
+// 6. GUIDES DATASET (guides.csv - 48 Guides for 24 spots)
+// ----------------------------------------------------
+export const MASTER_GUIDES: GuideItem[] = [
+  {
+    id: 'gd-1',
+    tourismSpot: 'Shaniwar Wada',
+    guideName: 'Pune Heritage Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 6,
+    specialization: 'Peshwa Architecture & Walking Tours'
+  },
+  {
+    id: 'gd-2',
+    tourismSpot: 'Shaniwar Wada',
+    guideName: 'Maratha History Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 9,
+    specialization: 'Maratha Empire Dynasties & Battle Tactics'
+  },
+  {
+    id: 'gd-3',
+    tourismSpot: 'Sinhagad Fort',
+    guideName: 'Sinhagad Local Trek Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 5,
+    specialization: 'Tanaji Malusare Ridge & Flora Navigation'
+  },
+  {
+    id: 'gd-4',
+    tourismSpot: 'Sinhagad Fort',
+    guideName: 'Sahyadri Trek Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'High-Altitude Sahyadri Mountain Expeditions'
+  },
+  {
+    id: 'gd-5',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    guideName: 'Pune Temple Guide',
+    approxGuidePrice: '₹400',
+    priceINR: 400,
+    dailyRate: 400,
+    rating: 4.7,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 4,
+    specialization: 'Vedic Rituals, Aarti & Temple Lore'
+  },
+  {
+    id: 'gd-6',
+    tourismSpot: 'Dagdusheth Halwai Ganpati',
+    guideName: 'Pune Heritage Guide',
+    approxGuidePrice: '₹600',
+    priceINR: 600,
+    dailyRate: 600,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 7,
+    specialization: 'Old Pune Wadas & Traditional Culture'
+  },
+  {
+    id: 'gd-7',
+    tourismSpot: 'Aga Khan Palace',
+    guideName: 'Gandhi History Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English', 'Gujarati'],
+    experienceYears: 6,
+    specialization: 'Freedom Struggle & Gandhian Memorials'
+  },
+  {
+    id: 'gd-8',
+    tourismSpot: 'Aga Khan Palace',
+    guideName: 'Pune Heritage Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Colonial Architecture & Heritage Preservation'
+  },
+  {
+    id: 'gd-9',
+    tourismSpot: 'Khadakwasla Dam',
+    guideName: 'Pune Nature Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.7,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 4,
+    specialization: 'Reservoir Eco-system & Birdwatching'
+  },
+  {
+    id: 'gd-10',
+    tourismSpot: 'Khadakwasla Dam',
+    guideName: 'Local Sightseeing Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 6,
+    specialization: 'Sunset Photography & Water Safety'
+  },
+  {
+    id: 'gd-11',
+    tourismSpot: 'Rajgad Fort',
+    guideName: 'Rajgad Trek Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 7,
+    specialization: 'Padmavati Machi & Balekilla Steep Climbs'
+  },
+  {
+    id: 'gd-12',
+    tourismSpot: 'Rajgad Fort',
+    guideName: 'Sahyadri Adventure Guide',
+    approxGuidePrice: '₹1,500',
+    priceINR: 1500,
+    dailyRate: 1500,
+    rating: 5.0,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 10,
+    specialization: 'Overnight Fort Camping & Wilderness First Aid'
+  },
+  {
+    id: 'gd-13',
+    tourismSpot: 'Torna Fort',
+    guideName: 'Torna Trek Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 6,
+    specialization: 'Zunjar Machi & Budhla Machi Traverses'
+  },
+  {
+    id: 'gd-14',
+    tourismSpot: 'Torna Fort',
+    guideName: 'Sahyadri Local Guide',
+    approxGuidePrice: '₹1,500',
+    priceINR: 1500,
+    dailyRate: 1500,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 9,
+    specialization: 'Prachandagad History & Ridge Safety'
+  },
+  {
+    id: 'gd-15',
+    tourismSpot: 'Mulshi Dam',
+    guideName: 'Mulshi Nature Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 5,
+    specialization: 'Backwater Ecology & Flora Trails'
+  },
+  {
+    id: 'gd-16',
+    tourismSpot: 'Mulshi Dam',
+    guideName: 'Adventure & Nature Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Tamhini Ghat Trekking & Eco-Resort Circuits'
+  },
+  {
+    id: 'gd-17',
+    tourismSpot: 'Lonavala',
+    guideName: 'Lonavala Sightseeing Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 6,
+    specialization: 'Tiger Point, Bhushi Dam & Chikki Heritage'
+  },
+  {
+    id: 'gd-18',
+    tourismSpot: 'Lonavala',
+    guideName: 'Adventure Tour Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 9,
+    specialization: 'Della Adventure & Monsoon Waterfall Trails'
+  },
+  {
+    id: 'gd-19',
+    tourismSpot: 'Khandala',
+    guideName: 'Khandala Local Guide',
+    approxGuidePrice: '₹600',
+    priceINR: 600,
+    dailyRate: 600,
+    rating: 4.7,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 5,
+    specialization: "Duke's Nose Trekking & Valley Vistas"
+  },
+  {
+    id: 'gd-20',
+    tourismSpot: 'Khandala',
+    guideName: 'Hill Station Guide',
+    approxGuidePrice: '₹800',
+    priceINR: 800,
+    dailyRate: 800,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 7,
+    specialization: 'Bhor Ghat History & Sunset Point Sightseeing'
+  },
+  {
+    id: 'gd-21',
+    tourismSpot: 'Lohagad Fort',
+    guideName: 'Lohagad Trek Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 6,
+    specialization: 'Vinchukata Ridge Exploration'
+  },
+  {
+    id: 'gd-22',
+    tourismSpot: 'Lohagad Fort',
+    guideName: 'Fort History Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 9,
+    specialization: 'Bhaja Caves Rock-Cut Art & Maratha Garrison'
+  },
+  {
+    id: 'gd-23',
+    tourismSpot: 'Panshet Dam',
+    guideName: 'Panshet Local Guide',
+    approxGuidePrice: '₹600',
+    priceINR: 600,
+    dailyRate: 600,
+    rating: 4.7,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 4,
+    specialization: 'Water Sports & Lakefront Camping'
+  },
+  {
+    id: 'gd-24',
+    tourismSpot: 'Panshet Dam',
+    guideName: 'Water Adventure Guide',
+    approxGuidePrice: '₹900',
+    priceINR: 900,
+    dailyRate: 900,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 7,
+    specialization: 'Kayaking & Speedboat Navigation'
+  },
+  {
+    id: 'gd-25',
+    tourismSpot: 'Visapur Fort',
+    guideName: 'Visapur Trek Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 6,
+    specialization: 'Waterfall Steps Navigation & Fort Ruins'
+  },
+  {
+    id: 'gd-26',
+    tourismSpot: 'Visapur Fort',
+    guideName: 'Sahyadri Trek Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Twin-Fort Circuit (Lohagad + Visapur)'
+  },
+  {
+    id: 'gd-27',
+    tourismSpot: 'Rajmachi Fort',
+    guideName: 'Rajmachi Trek Guide',
+    approxGuidePrice: '₹1,000',
+    priceINR: 1000,
+    dailyRate: 1000,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 7,
+    specialization: 'Shrivardhan & Manaranjan Twin Citadels'
+  },
+  {
+    id: 'gd-28',
+    tourismSpot: 'Rajmachi Fort',
+    guideName: 'Adventure Trek Guide',
+    approxGuidePrice: '₹1,500',
+    priceINR: 1500,
+    dailyRate: 1500,
+    rating: 5.0,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 10,
+    specialization: 'Kondane Caves Trail & Firefly Night Safaris'
+  },
+  {
+    id: 'gd-29',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    guideName: 'Wildlife Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.7,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 5,
+    specialization: 'Zoo Animal Conservation & Reptile Exhibits'
+  },
+  {
+    id: 'gd-30',
+    tourismSpot: 'Rajiv Gandhi Zoological Park',
+    guideName: 'Nature & Wildlife Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Katraj Lake Ecology & Family Guided Tours'
+  },
+  {
+    id: 'gd-31',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    guideName: 'Spiritual Guide',
+    approxGuidePrice: '₹400',
+    priceINR: 400,
+    dailyRate: 400,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 4,
+    specialization: 'Temple Architecture & Vedic Philosophy'
+  },
+  {
+    id: 'gd-32',
+    tourismSpot: 'ISKCON NVCC, Katraj',
+    guideName: 'Temple & Culture Guide',
+    approxGuidePrice: '₹600',
+    priceINR: 600,
+    dailyRate: 600,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 7,
+    specialization: 'Radha-Krishna Deity Traditions & Prasadam'
+  },
+  {
+    id: 'gd-33',
+    tourismSpot: 'Swaminarayan Temple, Narhe',
+    guideName: 'Temple Guide',
+    approxGuidePrice: '₹400',
+    priceINR: 400,
+    dailyRate: 400,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'Gujarati', 'English'],
+    experienceYears: 5,
+    specialization: 'BAPS Stone Carving Art & Mandir History'
+  },
+  {
+    id: 'gd-34',
+    tourismSpot: 'Swaminarayan Temple, Narhe',
+    guideName: 'Spiritual & Architecture Guide',
+    approxGuidePrice: '₹600',
+    priceINR: 600,
+    dailyRate: 600,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'Gujarati', 'English'],
+    experienceYears: 8,
+    specialization: 'Vastu Shastra, Light Shows & Spiritual Values'
+  },
+  {
+    id: 'gd-35',
+    tourismSpot: 'Parvati Hill Temple',
+    guideName: 'Pune Heritage Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 6,
+    specialization: 'Peshwa Dynasty History & Hilltop Temples'
+  },
+  {
+    id: 'gd-36',
+    tourismSpot: 'Parvati Hill Temple',
+    guideName: 'Temple & History Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Parvati Museum & City Heritage Walk'
+  },
+  {
+    id: 'gd-37',
+    tourismSpot: 'Alandi',
+    guideName: 'Pilgrimage Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 6,
+    specialization: 'Sant Dnyaneshwar Maharaj Sanjeevan Samadhi'
+  },
+  {
+    id: 'gd-38',
+    tourismSpot: 'Alandi',
+    guideName: 'Dnyaneshwar Maharaj Heritage Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 5.0,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 9,
+    specialization: 'Warkari Movement, Dnyaneshwari & Palkhi Tradition'
+  },
+  {
+    id: 'gd-39',
+    tourismSpot: 'Dehu',
+    guideName: 'Pilgrimage Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi'],
+    experienceYears: 5,
+    specialization: 'Sant Tukaram Gatha Mandir & Indrayani Ghat'
+  },
+  {
+    id: 'gd-40',
+    tourismSpot: 'Dehu',
+    guideName: 'Sant Tukaram Heritage Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Abhanga Traditions, Bhandara Hill & Tukaram Maharaj'
+  },
+  {
+    id: 'gd-41',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    guideName: 'Shopping Guide',
+    approxGuidePrice: '₹300',
+    priceINR: 300,
+    dailyRate: 300,
+    rating: 4.6,
+    languages: ['Hindi', 'English'],
+    experienceYears: 3,
+    specialization: 'Brand Navigation, Discounts & Styling'
+  },
+  {
+    id: 'gd-42',
+    tourismSpot: 'Phoenix Mall of the Millennium',
+    guideName: 'Entertainment Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Hindi', 'English', 'Marathi'],
+    experienceYears: 5,
+    specialization: 'Family VR Gaming, Dining & Cinema Booking'
+  },
+  {
+    id: 'gd-43',
+    tourismSpot: 'Imagicaa',
+    guideName: 'Theme Park Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.8,
+    languages: ['Hindi', 'English', 'Marathi'],
+    experienceYears: 4,
+    specialization: 'Ride Queuing Strategy & Park Navigation'
+  },
+  {
+    id: 'gd-44',
+    tourismSpot: 'Imagicaa',
+    guideName: 'Adventure & Family Guide',
+    approxGuidePrice: '₹800',
+    priceINR: 800,
+    dailyRate: 800,
+    rating: 4.9,
+    languages: ['Hindi', 'English', 'Marathi', 'Gujarati'],
+    experienceYears: 7,
+    specialization: 'VIP Express Access, Water Park & Family Safety'
+  },
+  {
+    id: 'gd-45',
+    tourismSpot: 'Lal Mahal',
+    guideName: 'Maratha History Guide',
+    approxGuidePrice: '₹400',
+    priceINR: 400,
+    dailyRate: 400,
+    rating: 4.8,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 5,
+    specialization: 'Shivaji Maharaj Childhood & Shaista Khan Episode'
+  },
+  {
+    id: 'gd-46',
+    tourismSpot: 'Lal Mahal',
+    guideName: 'Heritage Guide',
+    approxGuidePrice: '₹600',
+    priceINR: 600,
+    dailyRate: 600,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Pune Historical Core & Kasba Ganpati Trail'
+  },
+  {
+    id: 'gd-47',
+    tourismSpot: 'Pashan Lake',
+    guideName: 'Nature & Birdwatching Guide',
+    approxGuidePrice: '₹500',
+    priceINR: 500,
+    dailyRate: 500,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 6,
+    specialization: 'Avian Species Identification & Wetland Ecology'
+  },
+  {
+    id: 'gd-48',
+    tourismSpot: 'Pashan Lake',
+    guideName: 'Photography & Nature Guide',
+    approxGuidePrice: '₹700',
+    priceINR: 700,
+    dailyRate: 700,
+    rating: 4.9,
+    languages: ['Marathi', 'Hindi', 'English'],
+    experienceYears: 8,
+    specialization: 'Golden Hour Bird Photography & Telescope Sightings'
+  }
+];
+
+// ----------------------------------------------------
+// 7. PRE-CONFIGURED TOUR PACKAGES
+// ----------------------------------------------------
+export const MASTER_TOUR_PACKAGES: TourPackage[] = [
+  {
+    id: 'pkg-1',
+    title: 'Pune Heritage & Maratha Forts Circuit',
+    duration: '2 Days / 1 Night',
+    destinations: ['Shaniwar Wada', 'Lal Mahal', 'Sinhagad Fort', 'Aga Khan Palace'],
+    theme: 'Heritage',
+    price: 3499,
+    originalPrice: 4999,
+    rating: 4.9,
+    reviewsCount: 1420,
+    badge: 'Best Seller',
+    image: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Peshwa Wada Guided Tour', 'Sinhagad Trek & Pithla Bhakri', 'Gandhi Memorial', 'Heritage E-Bus Pass'],
+    inclusions: ['AC Cab & Transfers', '1-Night Resort Stay', 'Entry Tickets', 'Licensed Historian Guide', 'Breakfast']
+  },
+  {
+    id: 'pkg-2',
+    title: 'Sahyadri Cloud Treks & Forts Expedition',
+    duration: '3 Days / 2 Nights',
+    destinations: ['Rajgad Fort', 'Torna Fort', 'Lohagad Fort', 'Visapur Fort', 'Mulshi Dam'],
+    theme: 'Adventure',
+    price: 5499,
+    originalPrice: 7500,
+    rating: 4.9,
+    reviewsCount: 890,
+    badge: 'High Thrill',
+    image: 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Padmavati Machi Camping', 'Torna Ridge Climb', 'Waterfall Steps Trek', 'Campfire & Starry Night'],
+    inclusions: ['4x4 Vehicle Transfers', 'Tent/Resort Stay', 'Trek Permits', 'Mountain Guide & Safety Gear', 'All Meals']
+  },
+  {
+    id: 'pkg-3',
+    title: 'Spiritual Indrayani Pilgrimage & Vedic Trail',
+    duration: '2 Days / 1 Night',
+    destinations: ['Dagdusheth Halwai Ganpati', 'Alandi', 'Dehu', 'ISKCON NVCC, Katraj', 'Swaminarayan Temple, Narhe'],
+    theme: 'Spiritual',
+    price: 2999,
+    originalPrice: 4200,
+    rating: 4.9,
+    reviewsCount: 1150,
+    badge: 'Divine Peace',
+    image: 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80',
+    highlights: ['VIP Temple Darshan Passes', 'Dnyaneshwar Maharaj Samadhi', 'Tukaram Gatha Mandir', 'Govindas Sattvic Dining'],
+    inclusions: ['AC Cab Service', 'Deluxe Hotel Accommodation', 'Prasad Vouchers', 'Spiritual Tour Guide']
+  },
+  {
+    id: 'pkg-4',
+    title: 'Lonavala, Khandala & Imagicaa Family Fun',
+    duration: '2 Days / 1 Night',
+    destinations: ['Lonavala', 'Khandala', 'Imagicaa', 'Panshet Dam', 'Phoenix Mall of the Millennium'],
+    theme: 'Leisure',
+    price: 6999,
+    originalPrice: 9500,
+    rating: 4.8,
+    reviewsCount: 2300,
+    badge: 'Family Favorite',
+    image: 'https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?auto=format&fit=crop&w=800&q=80',
+    highlights: ['Imagicaa Theme & Water Park Unlimited Passes', 'Tiger Point Sunset', 'Della Adventure', 'Mall Shopping'],
+    inclusions: ['Expressway Cab', 'Novotel/Radisson Resort Stay', 'Park All-Access Tickets', 'Breakfast Buffet']
+  }
+];
+
+// ----------------------------------------------------
+// 8. DISTRICT ZONES & DESTINATIONS
+// ----------------------------------------------------
+export const MASTER_DISTRICT_ZONES: DistrictZone[] = [
+  {
+    id: 'zone-1',
+    name: 'Pune Heritage & City Center',
+    district: 'Pune',
+    spotCount: 6,
+    icon: '🏛️',
+    description: 'Historical core with Peshwa wadas, palaces, Gandhi memorial, and sacred city temples.'
+  },
+  {
+    id: 'zone-2',
+    name: 'Sahyadri Forts & Highland Treks',
+    district: 'Pune / Raigad Border',
+    spotCount: 6,
+    icon: '⛰️',
+    description: 'Towering mountain battlegrounds, Sinhagad, Rajgad, Torna, Visapur, and Rajmachi.'
+  },
+  {
+    id: 'zone-3',
+    name: 'Lakes, Dams & Waterfalls',
+    district: 'Western Ghats',
+    spotCount: 4,
+    icon: '🌊',
+    description: 'Mulshi, Panshet, Khadakwasla reservoirs, and Pashan ecological wetland.'
+  },
+  {
+    id: 'zone-4',
+    name: 'Indrayani Spiritual Corridor',
+    district: 'Pune Rural',
+    spotCount: 4,
+    icon: '🛕',
+    description: 'Pilgrimage shrines of Sant Dnyaneshwar and Sant Tukaram in Alandi, Dehu, Katraj & Narhe.'
+  },
+  {
+    id: 'zone-5',
+    name: 'Lonavala, Khandala & Entertainment',
+    district: 'Pune / Mumbai Expressway',
+    spotCount: 4,
+    icon: '🎡',
+    description: 'Misty hill stations, Della adventure parks, Phoenix Mall, and Imagicaa theme park.'
+  }
+];
+
+export const MASTER_DESTINATIONS: Destination[] = [
+  {
+    id: 'dest-1',
+    name: 'Pune District',
+    city: 'Pune',
+    state: 'Maharashtra',
+    description: 'Cultural capital of Maharashtra, bustling with Maratha history, IT hubs, and scenic Western Ghats.',
+    imageUrl: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+    image: 'https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80',
+    spotsCount: 24,
+    popularFor: ['Maratha History', 'Fort Treks', 'Lakes & Dams', 'Pilgrimage', 'Hill Stations'],
+    popularTags: ['Heritage', 'Forts', 'Western Ghats', 'Lakes'],
+    rating: 4.8,
+    weather: '26°C Pleasant',
+    avgEcoScore: 92,
+    tagline: 'The Cultural & Historical Capital of Maharashtra'
+  }
+];
+
+export const POPULAR_DESTINATIONS = MASTER_DESTINATIONS;
+
+export const VERIFIED_SERVICE_PROVIDERS: ServiceProvider[] = [
+  {
+    id: 'prov-1',
+    name: 'Shantai Hotel & Heritage Hospitality',
+    type: 'Hotel',
+    city: 'Pune',
+    rating: 4.8,
+    verified: true,
+    pricePerUnit: 2800,
+    unitLabel: 'per night',
+    description: 'Government registered eco-certified heritage hotel near Shaniwar Wada.',
+    contactNumber: '+91 20 2616 1414',
+    availableSlots: 12,
+    ecoCertified: true,
+    ecoTier: 'Gold Green',
+    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80',
+    isLiveAvailable: true,
+    kycStatus: 'Verified',
+    licenseNumber: 'MAH-PUN-HTL-8821',
+    joinedYear: 2018
+  },
+  {
+    id: 'prov-2',
+    name: 'Sorina Hillside Eco-Resort',
+    type: 'Hotel',
+    city: 'Pune',
+    rating: 4.9,
+    verified: true,
+    pricePerUnit: 3500,
+    unitLabel: 'per night',
+    description: 'Sahyadri mountain resort with zero single-use plastics and solar hot water.',
+    contactNumber: '+91 98220 33445',
+    availableSlots: 8,
+    ecoCertified: true,
+    ecoTier: 'Gold Green',
+    image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?auto=format&fit=crop&w=400&q=80',
+    isLiveAvailable: true,
+    kycStatus: 'Verified',
+    licenseNumber: 'MAH-PUN-HTL-9401',
+    joinedYear: 2020
+  },
+  {
+    id: 'prov-3',
+    name: 'GreenRide Pune Electric Fleet',
+    type: 'EV Cab',
+    city: 'Pune',
+    rating: 4.9,
+    verified: true,
+    pricePerUnit: 14,
+    unitLabel: 'per km',
+    description: '100% electric Tata Nexon & Tigor EV fleet with GPS live telemetry.',
+    contactNumber: '+91 99221 44556',
+    availableSlots: 24,
+    ecoCertified: true,
+    ecoTier: 'Gold Green',
+    image: 'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=400&q=80',
+    vehicleModel: 'Tata Nexon EV Max / Tigor EV',
+    isLiveAvailable: true,
+    kycStatus: 'Verified',
+    licenseNumber: 'MAH-PUN-CAB-0042',
+    joinedYear: 2021
+  },
+  {
+    id: 'prov-4',
+    name: 'Sahyadri Licensed Heritage & Trek Guides Association',
+    type: 'Guide',
+    city: 'Pune',
+    rating: 5.0,
+    verified: true,
+    pricePerUnit: 800,
+    unitLabel: 'per day',
+    description: 'Government licensed heritage historians and wilderness first-aid certified mountain guides.',
+    contactNumber: '+91 94220 11223',
+    availableSlots: 15,
+    ecoCertified: true,
+    ecoTier: 'Gold Green',
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+    languages: ['Marathi', 'Hindi', 'English'],
+    isLiveAvailable: true,
+    kycStatus: 'Verified',
+    licenseNumber: 'MAH-PUN-GDE-5531',
+    joinedYear: 2017
+  }
+];
+
+export const EMERGENCY_NUMBERS = [
+  { name: 'National Emergency Helpline', number: '112', desc: 'All emergencies, Police, Fire, Ambulance' },
+  { name: 'Tourist Police Helpline', number: '1363', desc: '24x7 Multi-lingual Tourist Assistance' },
+  { name: 'Ambulance / Medical', number: '108', desc: 'Emergency Medical Response & Trauma Care' },
+  { name: 'Women Safety Helpline', number: '1091', desc: '24x7 Women in distress protection' },
+  { name: 'Pune City Police Control', number: '020-26122880', desc: 'Central Control Room & Dispatch' },
+  { name: 'Western Ghats Trek Rescue', number: '+91 98220 12345', desc: 'Sahyadri Fort & Mountain Rescue Squad' }
+];
+
+export const DEFAULT_INITIAL_ITINERARY = {
+  id: 'itin-default',
+  title: 'Pune Heritage, Forts & Eco-Circuit',
+  destination: 'Pune, Maharashtra',
+  budget: {
+    totalEstimated: 6800,
+    targetBudget: 8000,
+    isWithinBudget: true,
+    variancePercentage: 15,
+    perPersonCost: 3400,
+    categories: {
+      stays: 2800,
+      transport: 1400,
+      food: 1200,
+      sightseeing: 400,
+      activities: 600,
+      guideAndSafety: 400
+    },
+    costSavingTips: ['Combined Heritage Pass saves ₹150 on monument entries', 'Off-peak EV Cab rates apply between 11 AM - 3 PM']
+  },
+  overview: 'A balanced 3-day journey through Pune and the Sahyadri mountains covering iconic Peshwa landmarks, Sinhagad hilltop fortress, and scenic lakeside retreats.',
+  durationDays: 3,
+  generatedAt: new Date().toISOString(),
+  localSafetyAdvisory: 'Safe and verified route. Keep Tourist Police (1363) on speed dial.',
+  smartRoute: {
+    totalDistanceKm: 120,
+    estimatedTransitHours: 4.5,
+    optimalSequence: ['Shaniwar Wada', 'Lal Mahal', 'Sinhagad Fort', 'Khadakwasla Dam', 'Aga Khan Palace']
+  },
+  ecoScore: {
+    totalScore: 92,
+    badge: 'Emerald Pioneer' as const,
+    ecoStayScore: 24,
+    greenTransportScore: 23,
+    localBusinessScore: 23,
+    routeEfficiencyScore: 22,
+    carbonSavedKg: 48.5,
+    recommendations: ['Use EV GreenRide Cab for Sinhagad Fort trip', 'Support registered local Maharashtrian food stalls']
+  },
+  budgetBreakdown: {
+    totalEstimated: 6800,
+    targetBudget: 8000,
+    isWithinBudget: true,
+    variancePercentage: 15,
+    perPersonCost: 3400,
+    categories: {
+      stays: 2800,
+      transport: 1400,
+      food: 1200,
+      sightseeing: 400,
+      activities: 600,
+      guideAndSafety: 400
+    },
+    costSavingTips: ['Combined Heritage Pass saves ₹150 on monument entries', 'Off-peak EV Cab rates apply between 11 AM - 3 PM']
+  },
+  days: [
+    {
+      dayNumber: 1,
+      theme: 'Peshwa Heritage & Historic Core',
+      dayBudget: 2200,
+      dayCarbonSavedKg: 14.5,
+      dayWeather: { temp: '26°C', condition: 'Pleasant' as const, advisory: 'Clear skies. Great for heritage walking.' },
+      activities: [
+        {
+          id: 'act-1-1',
+          timeSlot: 'Morning' as const,
+          timeRange: '08:30 AM - 11:30 AM',
+          title: 'Shaniwar Wada & Lal Mahal Guided Walk',
+          description: 'Explore the grand 1732 Peshwa seat and childhood home of Shivaji Maharaj with licensed historian guide.',
+          locationName: 'Shaniwar Wada, Pune',
+          lat: 18.5196,
+          lng: 73.8553,
+          estimatedCost: 150,
+          category: 'Spot' as const,
+          verifiedProvider: 'Sahyadri Licensed Guides',
+          weatherSuitability: 'Outdoor-Ideal' as const,
+          isEcoFriendly: true,
+          ecoTips: 'Pedestrian heritage walk reduces urban traffic emissions.',
+          recommendedDuration: '2.5 hours'
+        }
+      ]
+    }
+  ]
+};
+
+export const INITIAL_BOOKINGS: Booking[] = [
+  {
+    id: 'bk-101',
+    bookingRef: 'TM-2026-7841',
+    touristName: 'Rahul Sharma',
+    touristEmail: 'rahul.sharma@example.com',
+    touristPhone: '+91 98231 44556',
+    destination: 'Pune District, Maharashtra',
+    items: [
+      {
+        providerId: 'prov-1',
+        providerName: 'Shantai Hotel',
+        type: 'Hotel',
+        details: 'Deluxe Heritage Room (2 Nights, 2 Guests)',
+        amount: 5600
+      },
+      {
+        providerId: 'prov-3',
+        providerName: 'GreenRide Pune Electric Fleet',
+        type: 'Taxi',
+        details: 'Full Day EV Cab (Shaniwar Wada -> Sinhagad -> Khadakwasla)',
+        amount: 1400
+      },
+      {
+        providerId: 'prov-4',
+        providerName: 'Sahyadri Licensed Guides',
+        type: 'Guide',
+        details: 'Sinhagad Fort Historian Guide (Full Day)',
+        amount: 800
+      }
+    ],
+    totalAmount: 7800,
+    paymentMethod: 'UPI',
+    paymentStatus: 'Paid',
+    bookingDate: '2026-09-02',
+    travelDates: 'Sep 05 - Sep 07, 2026',
+    qrPayload: 'TOURMASTER-PASS-TM-2026-7841-VERIFIED',
+    status: 'Confirmed'
+  }
+];
+
+export const INITIAL_SOS_ALERTS: SOSAlert[] = [
+  {
+    id: 'sos-1',
+    alertCode: 'SOS-942',
+    touristName: 'Priya Deshmukh',
+    touristPhone: '+91 98765 43210',
+    lat: 18.3663,
+    lng: 73.7558,
+    locationDescription: 'Sinhagad Fort Wind Point Trek Trail',
+    timestamp: '10 mins ago',
+    emergencyType: 'Medical',
+    status: 'Dispatched',
+    dispatchedUnit: 'Rapid PCR Unit 04 & Sahyadri Trek Rescuers',
+    notes: 'Ankle sprain reported on downward ridge. Medical response team en-route with stretcher kit.'
+  }
+];
+
+export const INITIAL_ORGANISATION_ADVISORIES: OrganisationAdvisory[] = [
+  {
+    id: 'adv-1',
+    title: 'Heavy Rainfall Alert - Sahyadri Ghats & Waterfalls',
+    severity: 'Warning',
+    category: 'Weather',
+    targetCity: 'Pune & Lonavala',
+    message: 'IMD yellow alert for Pune district. Avoid slippery ridge trekking at Rajgad and Torna. Indoor heritage monuments recommended.',
+    issuedBy: 'Maharashtra Tourism Safety & Disaster Management Cell',
+    timestamp: '1 hour ago',
+    active: true
+  },
+  {
+    id: 'adv-2',
+    title: 'Ganeshotsav City Center Crowd Advisory',
+    severity: 'Info',
+    category: 'Crowd Management',
+    targetCity: 'Pune',
+    message: 'Special pedestrian corridors open around Dagdusheth Halwai Ganpati. Electric feeder buses operating 24x7 from Swargate.',
+    issuedBy: 'Pune Municipal Corporation & Traffic Police',
+    timestamp: '3 hours ago',
+    active: true
+  }
+];
+
+export const INITIAL_FEEDBACKS: FeedbackItem[] = [
+  {
+    id: 'fb-1',
+    touristName: 'Ananya Roy',
+    rating: 5,
+    category: 'Spot',
+    targetName: 'Sinhagad Fort',
+    comment: 'Spectacular mountain scenery and the local Pithla Bhakri was unforgettable! The QR entry made entering super smooth.',
+    date: 'Yesterday'
+  },
+  {
+    id: 'fb-2',
+    touristName: 'Karthik Menon',
+    rating: 5,
+    category: 'Guide',
+    targetName: 'Sahyadri Licensed Guides',
+    comment: 'Our historian guide Mahesh explained the Peshwa architecture at Shaniwar Wada with immense depth.',
+    date: '2 days ago'
+  }
+];
+
+export const INITIAL_COMPLAINTS: ComplaintItem[] = [
+  {
+    id: 'cmp-1',
+    complaintRef: 'CMP-2026-104',
+    touristName: 'Amit Verma',
+    touristPhone: '+91 97110 22334',
+    touristEmail: 'amit.verma@example.com',
+    category: 'Overcharging',
+    subject: 'Excess Parking Fee charged at private base lot',
+    description: 'Private vendor near fort base charged ₹100 instead of standard ₹30 government municipal tariff.',
+    targetEntity: 'Sinhagad Base Parking Lot B',
+    date: 'Yesterday',
+    status: 'In Progress',
+    resolutionNotes: 'Inspection squad dispatched to verify municipal tariff board.'
+  }
+];
+
