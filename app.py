@@ -889,13 +889,21 @@ def patch_sos(s_id):
 @app.route("/", defaults={"path": ""})
 @app.route("/<path:path>")
 def serve_spa(path):
+    # Return JSON 404 for any unhandled /api/* endpoints
+    if path.startswith("api/"):
+        return jsonify({"error": "API route not found", "path": f"/{path}"}), 404
+
     dist_dir = os.path.join(os.path.dirname(__file__), "dist")
     if path != "" and os.path.exists(os.path.join(dist_dir, path)):
         return send_from_directory(dist_dir, path)
     if os.path.exists(os.path.join(dist_dir, "index.html")):
         return send_from_directory(dist_dir, "index.html")
-    return jsonify({"status": "Flask API Active", "message": "Frontend dev server runs via Vite or build with npm run build"})
+    return jsonify({
+        "status": "Flask API Active",
+        "message": "Frontend assets not found. Run 'npm run build' to generate production bundle in ./dist"
+    })
 
 if __name__ == "__main__":
-    print(f"TOURMASTER Python Flask Server running on http://127.0.0.1:{PORT}")
-    app.run(host="0.0.0.0", port=PORT, debug=True)
+    is_debug = os.environ.get("FLASK_DEBUG", "0").lower() in ("true", "1", "t")
+    print(f"TOURMASTER Python Flask Server running on http://127.0.0.1:{PORT} (debug={is_debug})")
+    app.run(host="0.0.0.0", port=PORT, debug=is_debug)

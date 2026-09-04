@@ -8,7 +8,9 @@
     "dev:flask": "python app.py",
     "dev:fastapi": "python main.py",
     "build": "vite build",
+    "build:render": "pip install -r requirements.txt && npm install && npm run build",
     "start": "python app.py",
+    "start:prod": "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit"
   },
