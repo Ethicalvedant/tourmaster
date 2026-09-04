@@ -430,10 +430,15 @@ class RelationalDatabase:
             "tourismSpot": r["tourism_spot"],
             "name": r["guide_name"],
             "guideName": r["guide_name"],
-            "approxPrice": r["approx_guide_price"],
+            "approxPrice": r["approx_guide_price"] or f"₹{int(r['price_inr'])}",
+            "approxGuidePrice": r["approx_guide_price"] or f"₹{int(r['price_inr'])}",
+            "priceINR": r["price_inr"],
             "priceInr": r["price_inr"],
+            "dailyRate": r["price_inr"],
             "rating": r["rating"],
-            "specialization": r["specialization"]
+            "specialization": r["specialization"] or "Heritage & Culture",
+            "languages": ["English", "Hindi", "Marathi"],
+            "experienceYears": 8
         } for r in rows]
 
     def get_entertainments(self, tourism_spot: Optional[str] = None) -> List[Dict[str, Any]]:

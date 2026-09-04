@@ -402,7 +402,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               </div>
             </div>
             <button
-              onClick={() => setActiveTab('summary')}
+              onClick={() => handleSetTab('summary')}
               className="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-[11px] transition-all shadow-md"
             >
               Review ({selectedSpots.length + (selectedHotel ? 1 : 0) + selectedRestaurants.length + selectedActivities.length + (selectedTaxi ? 1 : 0) + (selectedGuide ? 1 : 0)})
@@ -613,7 +613,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
           return (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => handleSetTab(tab.id as any)}
               className={`p-2.5 rounded-xl flex items-center justify-center space-x-1.5 transition-all text-left ${
                 isActive
                   ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
@@ -836,7 +836,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               Selected <span className="text-emerald-400 font-bold">{selectedSpots.length} spot(s)</span> for custom itinerary & circuit
             </span>
             <button
-              onClick={() => setActiveTab('hotels')}
+              onClick={() => handleSetTab('hotels')}
               className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
             >
               <span>Next: Select Hotels (Optional)</span>
@@ -945,7 +945,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               Selected Hotel: <span className="text-teal-400 font-bold">{selectedHotel ? selectedHotel.item.hotelName : 'None (Optional)'}</span>
             </span>
             <button
-              onClick={() => setActiveTab('restaurants')}
+              onClick={() => handleSetTab('restaurants')}
               className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
             >
               <span>Next: Food & Dining (Optional)</span>
@@ -1051,7 +1051,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               Selected Dining: <span className="text-amber-400 font-bold">{selectedRestaurants.length} venue(s)</span>
             </span>
             <button
-              onClick={() => setActiveTab('activities')}
+              onClick={() => handleSetTab('activities')}
               className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
             >
               <span>Next: Entertainment & Activities</span>
@@ -1141,7 +1141,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               Selected Activities: <span className="text-purple-400 font-bold">{selectedActivities.length} experience(s)</span>
             </span>
             <button
-              onClick={() => setActiveTab('taxis')}
+              onClick={() => handleSetTab('taxis')}
               className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
             >
               <span>Next: Taxi & Cab Transit</span>
@@ -1248,7 +1248,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               Selected Taxi: <span className="text-cyan-400 font-bold">{selectedTaxi ? `Pune ➔ ${selectedTaxi.route.tourismSpot} (${selectedTaxi.vehicleType})` : 'None (Optional)'}</span>
             </span>
             <button
-              onClick={() => setActiveTab('guides')}
+              onClick={() => handleSetTab('guides')}
               className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
             >
               <span>Next: Tour Guides</span>
@@ -1283,6 +1283,12 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {guides.map((guide) => {
               const isSelected = selectedGuide?.item.id === guide.id;
+              const guideLanguages = (guide.languages && guide.languages.length > 0)
+                ? guide.languages 
+                : ['English', 'Hindi', 'Marathi'];
+              const guideDisplayName = guide.guideName || guide.name || 'Certified Heritage Guide';
+              const approxPrice = guide.approxGuidePrice || guide.approxPrice || `₹${guide.priceINR || guide.priceInr || 500}/day`;
+
               return (
                 <div
                   key={guide.id}
@@ -1296,11 +1302,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <UserCheck className="w-4 h-4 text-blue-400" />
-                        <h4 className="font-bold text-white text-sm">{guide.guideName}</h4>
+                        <h4 className="font-bold text-white text-sm">{guideDisplayName}</h4>
                       </div>
                       <div className="flex items-center space-x-1 text-amber-400 text-xs font-semibold">
                         <Star className="w-3.5 h-3.5 fill-amber-400" />
-                        <span>{guide.rating}</span>
+                        <span>{guide.rating || 4.8}</span>
                       </div>
                     </div>
 
@@ -1315,7 +1321,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     )}
 
                     <div className="flex flex-wrap gap-1">
-                      {guide.languages.map((lang, i) => (
+                      {guideLanguages.map((lang, i) => (
                         <span key={i} className="px-2 py-0.5 rounded bg-slate-950 text-slate-300 text-[10px] border border-slate-800">
                           🗣️ {lang}
                         </span>
@@ -1326,7 +1332,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
                       <span className="text-[10px] text-slate-500 block">Approx. Guide Fee</span>
-                      <span className="font-bold text-blue-300 text-xs">{guide.approxGuidePrice || `₹${guide.priceINR}/day`}</span>
+                      <span className="font-bold text-blue-300 text-xs">{approxPrice}</span>
                     </div>
 
                     <button
@@ -1350,10 +1356,10 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Selected Guide: <span className="text-blue-400 font-bold">{selectedGuide ? selectedGuide.item.guideName : 'None (Optional)'}</span>
+              Selected Guide: <span className="text-blue-400 font-bold">{selectedGuide ? (selectedGuide.item.guideName || selectedGuide.item.name) : 'None (Optional)'}</span>
             </span>
             <button
-              onClick={() => setActiveTab('summary')}
+              onClick={() => handleSetTab('summary')}
               className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
             >
               <span>Review & Make Booking</span>

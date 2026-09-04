@@ -433,14 +433,14 @@ export const TouristDiscoveryHub: React.FC<TouristDiscoveryHubProps> = ({
                   <span className="text-[10px] font-bold text-teal-400 bg-teal-500/10 px-2 py-0.5 rounded-full">
                     Spot: {gd.tourismSpot}
                   </span>
-                  <h4 className="font-bold text-white text-sm sm:text-base">{gd.guideName}</h4>
+                  <h4 className="font-bold text-white text-sm sm:text-base">{gd.guideName || gd.name || 'Certified Heritage Guide'}</h4>
                   <p className="text-[11px] text-slate-400">
-                    Languages: {gd.languages.join(', ')}
+                    Languages: {(gd.languages && gd.languages.length > 0 ? gd.languages : ['English', 'Hindi', 'Marathi']).join(', ')}
                   </p>
                 </div>
 
                 <div className="pt-2 flex items-center justify-between border-t border-slate-900 text-xs">
-                  <span className="text-emerald-400 font-bold text-sm">{gd.approxGuidePrice}</span>
+                  <span className="text-emerald-400 font-bold text-sm">{gd.approxGuidePrice || gd.approxPrice || '₹500/day'}</span>
                   <button
                     onClick={() => onBookItem && onBookItem(gd)}
                     className="px-3.5 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs transition-all"
