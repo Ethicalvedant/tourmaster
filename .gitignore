@@ -1,12 +1,27 @@
+# Dependencies
 node_modules/
-build/
-dist/
-coverage/
-.DS_Store
-*.log
-.env*
-!.env.example
-__pycache__/
-*.py[cod]
 .venv/
 venv/
+env/
+
+# Production Build outputs
+dist/
+build/
+coverage/
+
+# Environment and secrets
+.env
+.env.*
+
+# Python caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+
+# Operating System & IDE files
+.DS_Store
+Thumbs.db
+*.log
+.agents/
+.gemini/
