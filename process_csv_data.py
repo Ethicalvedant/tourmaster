@@ -280,18 +280,18 @@ SPOT_COORDS = {
     "Rajmachi Fort": (18.8286, 73.3986, "Adventure & Trekking", 50, 4.8, 97, "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"),
     "Rajiv Gandhi Zoological Park": (18.4552, 73.8617, "Nature & Wildlife", 40, 4.4, 90, "https://images.unsplash.com/photo-1534567153574-2b12153a87f0?auto=format&fit=crop&w=800&q=80"),
     "ISKCON NVCC, Katraj": (18.4485, 73.8804, "Spiritual & Wellness", 0, 4.8, 93, "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80"),
-    "Swaminarayan Temple, Narhe": (18.4467, 73.8189, "Spiritual & Wellness", 0, 4.7, 92, "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80"),
+    "Swaminarayan Temple, Narhe": (18.4467, 73.8189, "Spiritual & Wellness", 0, 4.7, 92, "/images/spots/swaminarayan-temple-narhe.jpg"),
     "Parvati Hill": (18.4980, 73.8475, "Heritage & Culture", 0, 4.6, 92, "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80"),
     "Parvati Hill Temple": (18.4980, 73.8475, "Spiritual & Wellness", 0, 4.6, 92, "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80"),
     "Alandi": (18.6772, 73.8967, "Spiritual & Wellness", 0, 4.8, 91, "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80"),
     "Dehu": (18.7189, 73.7717, "Spiritual & Wellness", 0, 4.7, 90, "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80"),
-    "Phoenix Mall of the Millennium": (18.5986, 73.7667, "Eco-Tourism & Rural", 0, 4.7, 88, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
+    "Phoenix Mall of the Millennium": (18.5986, 73.7667, "Eco-Tourism & Rural", 0, 4.7, 88, "/images/spots/phoenix-mall-of-the-millennium.jpg"),
     "Phoenix Marketcity Pune": (18.5622, 73.9167, "Eco-Tourism & Rural", 0, 4.7, 89, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
     "Amanora Mall": (18.5194, 73.9317, "Eco-Tourism & Rural", 0, 4.6, 88, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
     "Seasons Mall": (18.5186, 73.9333, "Eco-Tourism & Rural", 0, 4.6, 88, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
-    "Imagicaa": (18.7492, 73.2844, "Adventure & Trekking", 1499, 4.6, 88, "https://images.unsplash.com/photo-1513889961551-628c1e5e2ee9?auto=format&fit=crop&w=800&q=80"),
-    "Lal Mahal": (18.5194, 73.8561, "Heritage & Culture", 10, 4.5, 91, "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80"),
-    "Pashan Lake": (18.5367, 73.7844, "Nature & Wildlife", 0, 4.4, 95, "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80")
+    "Imagicaa": (18.7492, 73.2844, "Adventure & Trekking", 1499, 4.6, 88, "/images/spots/imagicaa.jpg"),
+    "Lal Mahal": (18.5194, 73.8561, "Heritage & Culture", 10, 4.5, 91, "/images/spots/lal-mahal.jpg"),
+    "Pashan Lake": (18.5367, 73.7844, "Nature & Wildlife", 0, 4.4, 95, "/images/spots/pashan-lake.jpg")
 }
 
 def parse_price(val_str):
