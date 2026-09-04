@@ -10,16 +10,13 @@ export interface UserLocationState {
 }
 
 export function useLocationManager(defaultCity: string = 'Pune, Maharashtra') {
-  // Check if previously switched on by user
-  const isPreviouslyEnabled = typeof window !== 'undefined' && localStorage.getItem('tourmaster_location_enabled') === 'true';
-
   const [locationState, setLocationState] = useState<UserLocationState>({
-    status: isPreviouslyEnabled ? 'locating' : 'prompt',
+    status: 'prompt',
     coords: null,
     city: defaultCity,
     weather: null,
     error: null,
-    isLocationEnabled: isPreviouslyEnabled,
+    isLocationEnabled: false,
   });
 
   const fetchWeatherForCoords = useCallback(async (lat: number, lng: number) => {
@@ -143,10 +140,8 @@ export function useLocationManager(defaultCity: string = 'Pune, Maharashtra') {
     }
   }, [defaultCity, requestLocation]);
 
-  // Automatically prompt/request location whenever anybody runs or starts the project
-  useEffect(() => {
-    requestLocation();
-  }, [requestLocation]);
+  // Do not take automatic access on initial load; wait for user to switch it on when asked
+  // (No auto-executing useEffect)
 
   return {
     ...locationState,
