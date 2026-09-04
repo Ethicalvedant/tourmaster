@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Compass, Store, Building2, Presentation, CloudSun, ShieldAlert, Sparkles, 
-  UserCheck, LogOut, Shield, MapPin, CheckCircle2, User, ChevronDown, Menu
+  UserCheck, LogOut, Shield, MapPin, CheckCircle2, User, ChevronDown, Menu, RefreshCw
 } from 'lucide-react';
 import { PortalMode, UserAuth } from '../types';
 
@@ -17,6 +17,10 @@ interface HeaderNavbarProps {
   currentCity: string;
   weatherTemp?: string;
   weatherCondition?: string;
+  isLocationEnabled?: boolean;
+  locationStatus?: 'prompt' | 'granted' | 'denied' | 'locating';
+  onToggleLocation?: (enable: boolean) => void;
+  onRequestLocation?: () => void;
 }
 
 export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
@@ -31,6 +35,10 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
   currentCity,
   weatherTemp = '28°C',
   weatherCondition = 'Sunny',
+  isLocationEnabled = false,
+  locationStatus = 'prompt',
+  onToggleLocation,
+  onRequestLocation,
 }) => {
   const role = userAuth?.role || 'tourist';
 
@@ -122,6 +130,50 @@ export const HeaderNavbar: React.FC<HeaderNavbarProps> = ({
           {/* Right Action Bar */}
           <div className="flex items-center space-x-2.5 sm:space-x-3">
             
+            {/* Direct GPS Status Feature Indicator */}
+            <div className="flex items-center">
+              {isLocationEnabled && locationStatus === 'granted' ? (
+                <button
+                  type="button"
+                  onClick={() => onToggleLocation?.(false)}
+                  className="flex items-center space-x-2 bg-emerald-950/70 hover:bg-emerald-900/60 px-2.5 sm:px-3 py-1.5 rounded-xl border border-emerald-500/50 text-xs shadow-md transition-all group cursor-pointer"
+                  title="Live GPS Location is ON. Click to Switch OFF."
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                  </span>
+                  <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                  <span className="text-emerald-300 font-bold tracking-tight">GPS: ON</span>
+                  <span className="text-slate-300 text-[11px] font-medium hidden md:inline max-w-[90px] truncate">
+                    ({currentCity})
+                  </span>
+                </button>
+              ) : locationStatus === 'locating' ? (
+                <div className="flex items-center space-x-1.5 bg-slate-800/90 px-2.5 sm:px-3 py-1.5 rounded-xl border border-cyan-500/40 text-xs text-cyan-300 animate-pulse">
+                  <RefreshCw className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+                  <span className="font-semibold">GPS: Locating...</span>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onRequestLocation) onRequestLocation();
+                    else if (onToggleLocation) onToggleLocation(true);
+                  }}
+                  className="flex items-center space-x-1.5 bg-slate-800/80 hover:bg-slate-800 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-700 hover:border-emerald-500/50 text-xs text-slate-300 hover:text-emerald-300 transition-all shadow-sm group cursor-pointer"
+                  title="GPS Location is OFF. Click to Switch ON device location."
+                >
+                  <span className="w-2 h-2 rounded-full bg-slate-500 group-hover:bg-emerald-400 transition-colors" />
+                  <MapPin className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-400 transition-colors" />
+                  <span className="font-semibold text-slate-300 group-hover:text-white">GPS: OFF</span>
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                    Turn ON
+                  </span>
+                </button>
+              )}
+            </div>
+
             {/* Live Weather Widget */}
             <div className="hidden sm:flex items-center space-x-2 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700/60 text-xs">
               <CloudSun className="w-4 h-4 text-amber-400 animate-pulse" />

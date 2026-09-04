@@ -24,7 +24,7 @@ export const TouristBookingsActivityDrawer: React.FC<TouristBookingsActivityDraw
   onTriggerSOS
 }) => {
   const [activeTab, setActiveTab] = useState<'bookings' | 'activity' | 'pass'>('bookings');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'Confirmed' | 'In Progress' | 'Completed'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'Confirmed' | 'Pending Approval' | 'Completed' | 'Declined'>('all');
   const [selectedBookingForPass, setSelectedBookingForPass] = useState<Booking | null>(null);
   const [copiedRef, setCopiedRef] = useState<string | null>(null);
 
@@ -71,7 +71,7 @@ export const TouristBookingsActivityDrawer: React.FC<TouristBookingsActivityDraw
 
   // Stats calculation
   const totalSpent = bookings.reduce((sum, b) => sum + b.totalAmount, 0);
-  const confirmedCount = bookings.filter(b => b.status === 'Confirmed' || b.status === 'In Progress').length;
+  const confirmedCount = bookings.filter(b => b.status === 'Confirmed').length;
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -186,7 +186,7 @@ export const TouristBookingsActivityDrawer: React.FC<TouristBookingsActivityDraw
             <div className="space-y-4 animate-fade-in">
               {/* Filter Pills */}
               <div className="flex items-center space-x-2 text-xs">
-                {(['all', 'Confirmed', 'In Progress', 'Completed'] as const).map(filter => (
+                {(['all', 'Confirmed', 'Pending Approval', 'Completed'] as const).map(filter => (
                   <button
                     key={filter}
                     onClick={() => setStatusFilter(filter)}

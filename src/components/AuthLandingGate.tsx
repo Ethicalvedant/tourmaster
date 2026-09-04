@@ -255,22 +255,45 @@ export const AuthLandingGate: React.FC<AuthLandingGateProps> = ({ onAuthenticate
           </div>
         </div>
 
-        {/* Header Badges: Location & Firebase */}
+        {/* Header Badges: Direct GPS Indicator & Firebase */}
         <div className="flex items-center space-x-2">
-          <button
-            onClick={locationManager.requestLocation}
-            className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-full text-xs border transition-all ${
-              locationManager.isLocationEnabled && locationManager.status === 'granted'
-                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-300'
-                : 'bg-slate-900/90 border-slate-800 text-slate-400 hover:text-white'
-            }`}
-            title="Click to toggle or refresh GPS location"
-          >
-            <MapPin className={`w-3.5 h-3.5 ${locationManager.isLocationEnabled ? 'text-emerald-400' : 'text-slate-500'}`} />
-            <span className="text-[11px] font-semibold max-w-[120px] truncate">
-              {locationManager.isLocationEnabled ? locationManager.city : 'Location: OFF'}
-            </span>
-          </button>
+          {locationManager.isLocationEnabled && locationManager.status === 'granted' ? (
+            <button
+              type="button"
+              onClick={() => locationManager.toggleLocationSwitch(false)}
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-full text-xs bg-emerald-950/70 hover:bg-emerald-900/60 border border-emerald-500/50 text-emerald-300 shadow-md transition-all cursor-pointer"
+              title="Live GPS Location is ON. Click to Switch OFF."
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              </span>
+              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="font-bold tracking-tight">GPS: ON</span>
+              <span className="text-slate-300 text-[11px] max-w-[120px] truncate hidden xs:inline">
+                ({locationManager.city})
+              </span>
+            </button>
+          ) : locationManager.status === 'locating' ? (
+            <div className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs bg-slate-900/90 border border-cyan-500/40 text-cyan-300 animate-pulse">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+              <span className="text-[11px] font-semibold">GPS: Locating...</span>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => locationManager.requestLocation()}
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs bg-slate-900/90 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 text-slate-300 hover:text-emerald-300 transition-all cursor-pointer"
+              title="Click to Switch ON device GPS location"
+            >
+              <span className="w-2 h-2 rounded-full bg-slate-500" />
+              <MapPin className="w-3.5 h-3.5 text-slate-400" />
+              <span className="text-[11px] font-semibold">GPS: OFF</span>
+              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                Turn ON
+              </span>
+            </button>
+          )}
 
           {/* Connected Firebase indicator */}
           <div className="hidden sm:flex items-center space-x-2 bg-slate-900/90 border border-slate-800 px-3 py-1.5 rounded-full text-xs">

@@ -220,6 +220,10 @@ export function App() {
         currentCity={locationManager.city || liveWeather?.city || itinerary.destination}
         weatherTemp={locationManager.weather?.temp || liveWeather?.temp || '26°C'}
         weatherCondition={locationManager.weather?.condition || liveWeather?.condition || 'Pleasant'}
+        isLocationEnabled={locationManager.isLocationEnabled}
+        locationStatus={locationManager.status}
+        onToggleLocation={locationManager.toggleLocationSwitch}
+        onRequestLocation={locationManager.requestLocation}
       />
 
       {/* Main Content Area - Displays ONLY 1 Single Interface According to User Role */}

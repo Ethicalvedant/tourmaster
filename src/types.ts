@@ -1,12 +1,12 @@
 export type PortalMode = 'tourist' | 'provider' | 'admin' | 'sih-explorer';
 
-export type TravelInterest = 
-  | 'Heritage & Culture' 
-  | 'Nature & Wildlife' 
-  | 'Adventure & Trekking' 
-  | 'Spiritual & Wellness' 
-  | 'Food & Culinary' 
-  | 'Beach & Leisure' 
+export type TravelInterest =
+  | 'Heritage & Culture'
+  | 'Nature & Wildlife'
+  | 'Adventure & Trekking'
+  | 'Spiritual & Wellness'
+  | 'Food & Culinary'
+  | 'Beach & Leisure'
   | 'Eco-Tourism & Rural';
 
 export type GroupType = 'Solo' | 'Couple' | 'Family with Kids' | 'Friends Group' | 'Senior Citizens';
@@ -123,16 +123,16 @@ export interface TouristSpot {
   description: string;
   lat: number;
   lng: number;
-  timings: string;
-  entryFee: number;
-  rating: number;
-  reviewsCount: number;
-  ecoScore: number;
-  isVerified: boolean;
-  imageUrl: string;
-  bestTimeToVisit: string;
-  nearestTransport: string;
-  tags: string[];
+  timings?: string;
+  entryFee?: number;
+  rating?: number;
+  reviewsCount?: number;
+  ecoScore?: number;
+  isVerified?: boolean;
+  imageUrl?: string;
+  bestTimeToVisit?: string;
+  nearestTransport?: string;
+  tags?: string[];
 }
 
 export type ProviderType = 'Hotel' | 'Homestay' | 'EV Cab' | 'Taxi' | 'Tour Guide' | 'Guide' | 'Local Eatery' | 'Restaurant' | 'Artisan Workshop' | 'Activity' | 'Spot';
@@ -223,7 +223,7 @@ export interface Booking {
   bookingDate: string;
   travelDates: string;
   qrPayload: string;
-  status: 'Confirmed' | 'Pending Approval' | 'Declined' | 'Completed' | 'In Progress';
+  status: 'Confirmed' | 'Pending Approval' | 'Declined' | 'Completed';
 }
 
 export interface SOSAlert {
@@ -268,23 +268,23 @@ export interface HotelItem {
   id: string;
   tourismSpot: string;
   hotelName: string;
-  distanceFromSpot: string;
-  distanceKm: number;
-  rating: number;
-  pricePerNight: number;
-  image: string;
-  amenities: string[];
+  distanceFromSpot?: string;
+  distanceKm?: number;
+  rating?: number;
+  pricePerNight?: number;
+  image?: string;
+  amenities?: string[];
 }
 
 export interface RestaurantItem {
   id: string;
   tourismSpot: string;
   restaurantName: string;
-  distanceFromSpot: string;
-  distanceKm: number;
-  cuisine: string;
-  priceForTwo: number;
-  rating: number;
+  distanceFromSpot?: string;
+  distanceKm?: number;
+  cuisine?: string;
+  priceForTwo?: number;
+  rating?: number;
   isPureVeg?: boolean;
 }
 
@@ -292,21 +292,21 @@ export interface EntertainmentItem {
   id: string;
   tourismSpot: string;
   entertainmentPlace: string;
-  distanceFromSpot: string;
-  distanceKm: number;
-  category: string;
-  approxEntryFee: number;
-  rating: number;
+  distanceFromSpot?: string;
+  distanceKm?: number;
+  category?: string;
+  approxEntryFee?: number;
+  rating?: number;
 }
 
 export interface TaxiRoute {
   id: string;
   tourismSpot: string;
-  distanceFromPune: string;
-  distanceKm: number;
-  approxTaxiFare: string;
-  fareAmount: number;
-  bestTravelOption: string;
+  distanceFromPune?: string;
+  distanceKm?: number;
+  approxTaxiFare?: string;
+  fareAmount?: number;
+  bestTravelOption?: string;
 }
 
 export interface GuideItem {
@@ -316,10 +316,10 @@ export interface GuideItem {
   approxGuidePrice?: string;
   priceINR?: number;
   dailyRate?: number;
-  specialization?: string;
-  rating: number;
+  rating?: number;
   languages: string[];
   experienceYears?: number;
+  specialization?: string;
 }
 
 export interface FeedbackItem {
@@ -357,5 +357,3 @@ export interface UserAuth {
   providerType?: string;
   isAuthenticated: boolean;
 }
-
-

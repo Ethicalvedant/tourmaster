@@ -114,12 +114,10 @@ export function useLocationManager(defaultCity: string = 'Pune, Maharashtra') {
     }
   }, [defaultCity, requestLocation]);
 
-  // Only auto-request if the user had explicitly enabled it previously
+  // Automatically prompt/request location whenever anybody runs or starts the project
   useEffect(() => {
-    if (isPreviouslyEnabled) {
-      requestLocation();
-    }
-  }, [isPreviouslyEnabled, requestLocation]);
+    requestLocation();
+  }, [requestLocation]);
 
   return {
     ...locationState,

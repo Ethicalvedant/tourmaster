@@ -330,14 +330,14 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             </p>
           </div>
 
-          {/* Real-time Total Estimated Price Badge */}
+          {/* Real-time Configured Tour & Facilities Indicator */}
           <div className="bg-slate-950/80 border border-emerald-500/40 p-4 rounded-2xl flex flex-col items-end justify-center min-w-[200px] shadow-lg">
-            <div className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Estimated Total</div>
-            <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono flex items-center">
-              <span>₹{grandTotal.toLocaleString('en-IN')}</span>
+            <div className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Custom Tour Hub</div>
+            <div className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center">
+              <span>{selectedSpots.length} Spot{selectedSpots.length !== 1 ? 's' : ''} Selected</span>
             </div>
             <div className="text-[10px] text-slate-400 mt-0.5">
-              {selectedSpots.length} Spot{selectedSpots.length !== 1 ? 's' : ''} • {travelersCount} Travelers
+              {travelersCount} Traveler{travelersCount > 1 ? 's' : ''} • Departure: {formattedSelectedDate}
             </div>
           </div>
         </div>
@@ -813,14 +813,12 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Entry Fee</span>
-                      <span className="font-bold text-emerald-400">
-                        {spot.entryFee === 0 ? 'Free Entry' : `₹${spot.entryFee} / person`}
-                      </span>
+                      <span className="text-[10px] text-slate-500 block">Visiting Hours</span>
+                      <span className="text-[11px] text-slate-300 font-medium">{spot.timings || '09:00 AM - 06:00 PM'}</span>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] text-slate-500 block">Timings</span>
-                      <span className="text-[11px] text-slate-300 font-medium">{spot.timings}</span>
+                      <span className="text-[10px] text-slate-500 block">Best Time</span>
+                      <span className="text-[11px] text-emerald-400 font-medium">{spot.bestTimeToVisit || 'Morning / Evening'}</span>
                     </div>
                   </div>
                 </div>
@@ -830,7 +828,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Selected <span className="text-emerald-400 font-bold">{selectedSpots.length} spot(s)</span> (Estimated Entry: ₹{spotsTotal})
+              Selected <span className="text-emerald-400 font-bold">{selectedSpots.length} spot(s)</span> for custom itinerary & circuit
             </span>
             <button
               onClick={() => setActiveTab('hotels')}
@@ -852,7 +850,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             <div>
               <h3 className="font-bold text-white text-sm">Select Accommodations (Optional)</h3>
               <p className="text-slate-400 text-[11px] mt-0.5">
-                Browse verified stays near your selected heritage destinations with instant booking rates.
+                Browse verified stays near your selected heritage destinations.
               </p>
             </div>
             {selectedHotel && (
@@ -884,8 +882,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-teal-300">
                         {hotel.tourismSpot}
                       </div>
-                      <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-slate-950/90 text-[10px] font-bold text-white">
-                        {hotel.distanceFromSpot} ({hotel.distanceKm} km)
+                      <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-slate-950/90 text-[10px] font-bold text-teal-300 border border-teal-500/20">
+                        Verified Eco-Stay
                       </div>
                     </div>
 
@@ -899,7 +897,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       </div>
 
                       <div className="flex flex-wrap gap-1 mt-2">
-                        {hotel.amenities.map((am, i) => (
+                        {hotel.amenities?.map((am, i) => (
                           <span key={i} className="px-2 py-0.5 rounded bg-slate-950 text-slate-400 text-[10px] border border-slate-800">
                             {am}
                           </span>
@@ -910,8 +908,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Rate per Night</span>
-                      <span className="font-bold text-teal-400 text-sm">₹{hotel.pricePerNight}</span>
+                      <span className="text-[10px] text-slate-500 block">Location Area</span>
+                      <span className="font-semibold text-teal-300 text-xs">Near {hotel.tourismSpot}</span>
                     </div>
 
                     <button
@@ -935,7 +933,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Hotel Total: <span className="text-teal-400 font-bold">₹{hotelTotal}</span>
+              Selected Hotel: <span className="text-teal-400 font-bold">{selectedHotel ? selectedHotel.item.hotelName : 'None (Optional)'}</span>
             </span>
             <button
               onClick={() => setActiveTab('restaurants')}
@@ -1006,14 +1004,14 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     </div>
 
                     <div className="text-[11px] text-slate-400">
-                      Located near: <span className="text-slate-300 font-semibold">{rest.tourismSpot}</span> ({rest.distanceFromSpot})
+                      Located near: <span className="text-slate-300 font-semibold">{rest.tourismSpot}</span>
                     </div>
                   </div>
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Approx for Two</span>
-                      <span className="font-bold text-amber-400 text-sm">₹{rest.priceForTwo}</span>
+                      <span className="text-[10px] text-slate-500 block">Dining Speciality</span>
+                      <span className="font-semibold text-amber-300 text-xs">{rest.cuisine}</span>
                     </div>
 
                     <button
@@ -1040,7 +1038,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Dining Estimate: <span className="text-amber-400 font-bold">₹{diningTotal}</span>
+              Selected Dining: <span className="text-amber-400 font-bold">{selectedRestaurants.length} venue(s)</span>
             </span>
             <button
               onClick={() => setActiveTab('activities')}
@@ -1095,16 +1093,14 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       Category: <span className="text-purple-300 font-semibold">{act.category}</span>
                     </div>
                     <div className="text-[11px] text-slate-400">
-                      Location: <span className="text-slate-300">{act.tourismSpot} ({act.distanceFromSpot})</span>
+                      Location: <span className="text-slate-300 font-semibold">{act.tourismSpot}</span>
                     </div>
                   </div>
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Entry / Ticket</span>
-                      <span className="font-bold text-purple-400 text-sm">
-                        {act.approxEntryFee === 0 ? 'Free' : `₹${act.approxEntryFee}`}
-                      </span>
+                      <span className="text-[10px] text-slate-500 block">Activity Experience</span>
+                      <span className="font-semibold text-purple-300 text-xs">{act.category}</span>
                     </div>
 
                     <button
@@ -1131,7 +1127,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Activities Total: <span className="text-purple-400 font-bold">₹{activitiesTotal}</span>
+              Selected Activities: <span className="text-purple-400 font-bold">{selectedActivities.length} experience(s)</span>
             </span>
             <button
               onClick={() => setActiveTab('taxis')}
@@ -1153,7 +1149,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             <div>
               <h3 className="font-bold text-white text-sm">Select Taxi / Cab Route (Optional)</h3>
               <p className="text-slate-400 text-[11px] mt-0.5">
-                Standard approved fares from Pune with EV Green Cab & Sedan options.
+                Standard approved routes with EV Green Cab, Sedan & SUV options.
               </p>
             </div>
             {selectedTaxi && (
@@ -1184,11 +1180,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                         <Car className="w-4 h-4 text-cyan-400" />
                         <h4 className="font-bold text-white text-sm">Pune ➔ {taxi.tourismSpot}</h4>
                       </div>
-                      <span className="text-[11px] font-bold text-slate-300">{taxi.distanceFromPune}</span>
+                      <span className="text-[10px] font-bold text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">Transit Route</span>
                     </div>
 
                     <div className="text-xs text-slate-400">
-                      Best Option: <span className="text-cyan-300 font-semibold">{taxi.bestTravelOption}</span>
+                      Best Travel Option: <span className="text-cyan-300 font-semibold">{taxi.bestTravelOption}</span>
                     </div>
 
                     {/* Vehicle Type Picker (if selected) */}
@@ -1213,8 +1209,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Est. Taxi Fare</span>
-                      <span className="font-bold text-cyan-400 text-sm">₹{taxi.fareAmount}</span>
+                      <span className="text-[10px] text-slate-500 block">Fleet Category</span>
+                      <span className="font-semibold text-cyan-300 text-xs">{selectedTaxi?.route.id === taxi.id ? selectedTaxi.vehicleType : 'EV Cab / Sedan / SUV'}</span>
                     </div>
 
                     <button
@@ -1238,7 +1234,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Taxi Fare Total: <span className="text-cyan-400 font-bold">₹{taxiTotal}</span>
+              Selected Taxi: <span className="text-cyan-400 font-bold">{selectedTaxi ? `Pune ➔ ${selectedTaxi.route.tourismSpot} (${selectedTaxi.vehicleType})` : 'None (Optional)'}</span>
             </span>
             <button
               onClick={() => setActiveTab('guides')}
@@ -1318,10 +1314,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Daily Guide Fee</span>
-                      <span className="font-bold text-blue-400 text-sm">
-                        {guide.approxGuidePrice || `₹${guide.priceINR || guide.dailyRate || 500}`} / day
-                      </span>
+                      <span className="text-[10px] text-slate-500 block">Accreditation</span>
+                      <span className="font-semibold text-blue-300 text-xs">Certified Board Guide</span>
                     </div>
 
                     <button
@@ -1345,7 +1339,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
           <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
             <span className="text-xs text-slate-300 font-semibold">
-              Guide Total: <span className="text-blue-400 font-bold">₹{guideTotal}</span>
+              Selected Guide: <span className="text-blue-400 font-bold">{selectedGuide ? selectedGuide.item.guideName : 'None (Optional)'}</span>
             </span>
             <button
               onClick={() => setActiveTab('summary')}
@@ -1366,13 +1360,13 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 space-y-6">
             <div className="border-b border-slate-800 pb-4 flex items-center justify-between">
               <div>
-                <h3 className="text-xl font-bold font-display text-white">Custom Tour Booking Summary</h3>
+                <h3 className="text-xl font-bold font-display text-white">Custom Tour Booking & Facilities Summary</h3>
                 <p className="text-xs text-slate-400 mt-0.5">
                   Review your selected tourism spots and optional facilities before generating your digital travel pass.
                 </p>
               </div>
               <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold">
-                {travelDate} • {travelersCount} Travelers
+                {formattedSelectedDate} • {travelersCount} Travelers
               </span>
             </div>
 
@@ -1385,7 +1379,9 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     <MapPin className="w-4 h-4" />
                     <span>Tourism Spots ({selectedSpots.length})</span>
                   </div>
-                  <span className="font-mono font-bold text-white">₹{spotsTotal}</span>
+                  <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    Itinerary Confirmed
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {selectedSpots.map(s => (
@@ -1409,7 +1405,9 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       </div>
                     </div>
                   </div>
-                  <span className="font-mono font-bold text-white">₹{hotelTotal}</span>
+                  <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-500/30">
+                    Stay Reserved
+                  </span>
                 </div>
               )}
 
@@ -1421,7 +1419,9 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       <Utensils className="w-4 h-4" />
                       <span>Dining ({selectedRestaurants.length})</span>
                     </div>
-                    <span className="font-mono font-bold text-white">₹{diningTotal}</span>
+                    <span className="text-[10px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">
+                      Table Scheduled
+                    </span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedRestaurants.map(r => (
@@ -1441,7 +1441,9 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       <Sparkles className="w-4 h-4" />
                       <span>Activities ({selectedActivities.length})</span>
                     </div>
-                    <span className="font-mono font-bold text-white">₹{activitiesTotal}</span>
+                    <span className="text-[10px] font-bold text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded-full border border-purple-500/30">
+                      Pass Included
+                    </span>
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {selectedActivities.map(a => (
@@ -1460,10 +1462,12 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     <Car className="w-4 h-4" />
                     <div>
                       <div>Pune ➔ {selectedTaxi.route.tourismSpot} ({selectedTaxi.vehicleType})</div>
-                      <div className="text-[10px] text-slate-400 font-normal">{selectedTaxi.route.distanceFromPune} transit</div>
+                      <div className="text-[10px] text-slate-400 font-normal">Dedicated Sightseeing Transit</div>
                     </div>
                   </div>
-                  <span className="font-mono font-bold text-white">₹{taxiTotal}</span>
+                  <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded-full border border-cyan-500/30">
+                    Cab Dispatched
+                  </span>
                 </div>
               )}
 
@@ -1477,19 +1481,21 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       <div className="text-[10px] text-slate-400 font-normal">Languages: {selectedGuide.item.languages.join(', ')}</div>
                     </div>
                   </div>
-                  <span className="font-mono font-bold text-white">₹{guideTotal}</span>
+                  <span className="text-[10px] font-bold text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full border border-blue-500/30">
+                    Guide Assigned
+                  </span>
                 </div>
               )}
             </div>
 
-            {/* Total Calculation & Action */}
+            {/* Total Facilities Confirmation & Action */}
             <div className="p-6 rounded-2xl bg-gradient-to-tr from-emerald-950/80 via-slate-900 to-slate-950 border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
-                <span className="text-xs text-slate-400 font-semibold uppercase">Grand Total Estimated</span>
-                <div className="text-3xl font-black text-emerald-400 font-mono">
-                  ₹{grandTotal.toLocaleString('en-IN')}
+                <span className="text-xs text-slate-400 font-semibold uppercase">Unified Digital Pass</span>
+                <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-display">
+                  {selectedSpots.length} Spot{selectedSpots.length !== 1 ? 's' : ''} & Facilities Ready
                 </div>
-                <span className="text-[11px] text-slate-400">Includes all taxes, booking guarantees & SOS 24/7 coverage.</span>
+                <span className="text-[11px] text-slate-400">Includes QR pass, booking guarantees, verified providers & SOS 24/7 coverage.</span>
               </div>
 
               <button
