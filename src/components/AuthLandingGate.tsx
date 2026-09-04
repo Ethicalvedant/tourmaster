@@ -324,6 +324,28 @@ export const AuthLandingGate: React.FC<AuthLandingGateProps> = ({ onAuthenticate
               </p>
             </div>
 
+            {/* Switch ON Device Location First Banner */}
+            {!locationManager.isLocationEnabled && (
+              <div className="p-3.5 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 flex items-center justify-between gap-3 text-xs shadow-lg shadow-emerald-500/10 animate-fade-in">
+                <div className="flex items-center space-x-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-4 h-4 animate-bounce" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-white text-[11px]">📍 Step 1: Switch ON Location</div>
+                    <div className="text-[10px] text-slate-300">Enables live satellite weather & nearest heritage facilities</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => locationManager.requestLocation()}
+                  className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:brightness-110 text-slate-950 font-bold text-xs flex-shrink-0 shadow-md transition-all cursor-pointer"
+                >
+                  Switch ON
+                </button>
+              </div>
+            )}
+
             {/* 3 Dedicated Role Visual Cards */}
             <div className="space-y-2.5 pt-1">
               {/* Role 1: Tourist */}

@@ -74,14 +74,14 @@ export const LocationAccessPrompt: React.FC<LocationAccessPromptProps> = ({
           <div>
             <div className="flex items-center space-x-2">
               <h3 className="text-lg sm:text-xl font-bold font-display text-white">
-                Switch ON Device Location
+                Please Switch ON Device Location First
               </h3>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-                RECOMMENDED
+                FIRST STEP
               </span>
             </div>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              Enable your device GPS to activate real-time weather alerts, proximity-based heritage circuits, local EV cabs, and instant emergency SOS dispatch.
+              To start using TourMaster AI, please switch ON your device GPS location first. It enables live satellite weather, nearby heritage routes, verified EV cabs, and instant emergency SOS dispatch.
             </p>
           </div>
         </div>
@@ -91,8 +91,8 @@ export const LocationAccessPrompt: React.FC<LocationAccessPromptProps> = ({
           <div className="flex items-start space-x-2">
             <CloudSun className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
             <div>
-              <div className="font-semibold text-white text-[11px]">Live Weather Sync</div>
-              <div className="text-[10px] text-slate-400">Rain & Monsoon AI alerts</div>
+              <div className="font-semibold text-white text-[11px]">Live Satellite Weather</div>
+              <div className="text-[10px] text-slate-400">Exact real-time temp & rain sync</div>
             </div>
           </div>
           <div className="flex items-start space-x-2">
@@ -134,7 +134,7 @@ export const LocationAccessPrompt: React.FC<LocationAccessPromptProps> = ({
             ) : (
               <>
                 <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
-                <span>Switch ON Device Location</span>
+                <span>⚡ Switch ON Device Location First</span>
                 <ChevronRight className="w-4 h-4" />
               </>
             )}
@@ -145,7 +145,7 @@ export const LocationAccessPrompt: React.FC<LocationAccessPromptProps> = ({
             onClick={handleDismiss}
             className="w-full sm:w-auto py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer text-center"
           >
-            Use Default (Pune)
+            Skip & Use Default (Pune)
           </button>
         </div>
       </div>
