@@ -357,3 +357,13 @@ export interface UserAuth {
   providerType?: string;
   isAuthenticated: boolean;
 }
+
+// Semantic Aliases for Service Connectives
+export type Hotel = HotelItem;
+export type Restaurant = RestaurantItem;
+export type Entertainment = EntertainmentItem;
+export type TaxiDriver = TaxiRoute;
+export type TourGuide = GuideItem;
+export type SafetyAdvisory = OrganisationAdvisory;
+export type Feedback = FeedbackItem;
+export type Complaint = ComplaintItem;
