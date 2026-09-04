@@ -37,18 +37,14 @@ advisories = data.get("advisories", [])
 feedbacks_list = data.get("feedbacksList", [])
 complaints_list = data.get("complaintsList", [])
 
-def get_gemini_api_key():
-    key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if not key or key == "MY_GEMINI_API_KEY":
-        return None
-    return key
+from tourmitra_engine import process_tourmitra_chat, get_gemini_api_key
 
 def call_gemini(prompt, system_instruction=None, response_schema=None):
     api_key = get_gemini_api_key()
     if not api_key:
         return None
     
-    models = ["gemini-2.5-flash", "gemini-1.5-flash"]
+    models = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"]
     for model in models:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         payload = {
@@ -64,14 +60,14 @@ def call_gemini(prompt, system_instruction=None, response_schema=None):
             payload["generationConfig"] = generation_config
 
         try:
-            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=12)
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=20)
             if res.status_code == 200:
                 result = res.json()
                 text = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
                 if text:
                     return text
         except Exception as e:
-            print(f"[Gemini API Error with {model}]:", e)
+            print(f"[Flask Gemini Error with {model}]:", e)
             continue
     return None
 
@@ -723,58 +719,13 @@ def tour_guide_companion():
     body = request.get_json() or {}
     query = body.get("query", "").strip()
     dest = body.get("destination", "Pune, Maharashtra")
+    history = body.get("history", [])
 
     if not query:
         return jsonify({"error": "Query is required"}), 400
 
-    q_lower = query.lower()
-    is_booking = any(w in q_lower for w in ["book", "reserve", "package", "tour booking", "hotel", "stay", "cab", "taxi", "guide", "pass", "ticket", "spots"])
-
-    system_prompt = f"""You are TourMitra (तूर मित्र), the official AI Tour Guide & Companion for Smart India Hackathon 2026.
-You are an enthusiastic, culturally knowledgeable, multilingual personal travel guide for Maharashtra & {dest}.
-Tone: Warm, concise, practical, with storytelling, Marathi translation phrases, and eco tips.
-If emergency assistance is requested, advise dialling 112 or 1363 (Tourist Helpline)."""
-
-    ai_reply = call_gemini(query, system_instruction=system_prompt)
-    if ai_reply:
-        cat = "hotels" if ("hotel" in q_lower or "stay" in q_lower) else "restaurants" if ("food" in q_lower or "eat" in q_lower) else "taxis" if ("cab" in q_lower or "taxi" in q_lower) else "guides" if "guide" in q_lower else "spots"
-        return jsonify({
-            "text": ai_reply,
-            "isBookingIntent": is_booking,
-            "bookingCategory": cat,
-            "suggestions": [
-                "🎟️ Open Spots, Stays, Food, Taxis & Guides Studio",
-                "Tell me about Sinhagad Fort & Tanaji Malusare",
-                "What are the best street food delicacies in Pune?",
-                "Translate 'How much does this cost?' into Marathi"
-            ]
-        })
-
-    # High precision offline responses
-    if "shaniwar wada" in q_lower or "bajirao" in q_lower:
-        ans = "🏛️ **Shaniwar Wada (शनिवार वाडा)**: Built in 1732 by Peshwa Baji Rao I, this 7-story fortification served as the grand seat of the Maratha Empire until 1818.\n• Key Highlights: Delhi Darwaza with anti-elephant spikes, Mastani Mahal fountain ruins, and evening light show.\n• Tip: Visit at 09:00 AM for crowd-free photography and hire our registered guide."
-    elif "sinhagad" in q_lower or "tanaji" in q_lower:
-        ans = "⛰️ **Sinhagad Fort (सिंहगड - Lion's Fort)**: Perched 1,312m atop Sahyadri ranges (30 km from Pune), famous for the heroic 1670 battle led by Subedar Tanaji Malusare.\n• Must-Try Food: Hot clay-pot *Pithla Bhakri*, crispy *Kanda Bhajji*, and fresh Matka Dahi.\n• Viewpoints: Wind Point, Kalyan Darwaza, and Tanaji Memorial."
-    elif "dagdusheth" in q_lower or "ganpati" in q_lower:
-        ans = "🛕 **Shrimant Dagdusheth Halwai Ganpati Temple**: Sacred Ganesha shrine established in 1893 by sweetmaker Shrimant Dagdusheth.\n• Darshan: 06:00 AM – 10:30 PM (Kakad Aarti at 07:30 AM).\n• Nearby: Explore Tulshibaug traditional market."
-    elif "food" in q_lower or "misal" in q_lower or "thali" in q_lower:
-        ans = "🍽️ **Authentic Pune Culinary Delights**:\n1. Pithla Bhakri with Thecha at Sinhagad Fort.\n2. Puneri Misal Pav garnished with farsan & lemon.\n3. Irani Bun Maska & Chai at Cafe GoodLuck.\n4. Mango Mastani thick ice cream shake.\n5. Chitale Bandhu Bakarwadi."
-    elif "sos" in q_lower or "emergency" in q_lower or "police" in q_lower:
-        ans = "🚨 **Emergency Safety Helplines**:\n• National Emergency: 112\n• Tourist Police Helpline: 1363 (24/7 Multilingual)\n• Medical Ambulance: 108\n• Women Safety: 1091\n💡 Click the red SOS button on top for live GPS patrol dispatch."
-    else:
-        ans = f"Namaste! I am **TourMitra (तूर मित्र)**, your dedicated AI travel and cultural assistant for {dest}.\nI can help you explore 24 tourism spots, Sahyadri fort treks, local cuisine, EV cab routes, and instant tour booking."
-
-    return jsonify({
-        "text": ans,
-        "isBookingIntent": is_booking,
-        "bookingCategory": "spots",
-        "suggestions": [
-            "Tell me about Shaniwar Wada & Sinhagad Fort",
-            "What are authentic street foods in Pune?",
-            "Translate 'How much does this cost?' to Marathi",
-            "🎟️ I want to book a complete tour package"
-        ]
-    })
+    result = process_tourmitra_chat(query, dest, history)
+    return jsonify(result)
 
 @app.route("/api/ai/adapt-weather", methods=["POST"])
 def adapt_weather():

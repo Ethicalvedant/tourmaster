@@ -52,18 +52,14 @@ advisories = data.get("advisories", [])
 feedbacks_list = data.get("feedbacksList", [])
 complaints_list = data.get("complaintsList", [])
 
-def get_gemini_api_key():
-    key = os.environ.get("GEMINI_API_KEY", "").strip()
-    if not key or key == "MY_GEMINI_API_KEY":
-        return None
-    return key
+from tourmitra_engine import process_tourmitra_chat, get_gemini_api_key
 
 def call_gemini(prompt: str, system_instruction: Optional[str] = None, response_schema: bool = False):
     api_key = get_gemini_api_key()
     if not api_key:
         return None
     
-    models = ["gemini-2.5-flash", "gemini-1.5-flash"]
+    models = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-flash-latest", "gemini-3.1-flash-lite"]
     for model in models:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
         payload = {"contents": [{"parts": [{"text": prompt}]}]}
@@ -73,7 +69,7 @@ def call_gemini(prompt: str, system_instruction: Optional[str] = None, response_
             payload["generationConfig"] = {"responseMimeType": "application/json"}
 
         try:
-            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=12)
+            res = requests.post(url, json=payload, headers={"Content-Type": "application/json"}, timeout=20)
             if res.status_code == 200:
                 result = res.json()
                 text = result.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
@@ -473,6 +469,8 @@ async def live_weather(body: Dict[str, Any] = Body(...)):
         "forecast": [
             {"day": "Today", "temp": "24°C", "condition": "Partly Cloudy", "rainChance": "15%"},
             {"day": "Tomorrow", "temp": "27°C", "condition": "Sunny", "rainChance": "5%"},
+            {"day": "Day 3", "temp": "25°C", "condition": "Pleasant", "rainChance": "10%"}
+        ]
     }
 
 @app.get("/api/location/ip-detect")
@@ -597,27 +595,11 @@ async def generate_itinerary(body: Dict[str, Any] = Body(...)):
 async def tour_guide(body: Dict[str, Any] = Body(...)):
     query = body.get("query", "").strip()
     dest = body.get("destination", "Pune, Maharashtra")
+    history = body.get("history", [])
     if not query:
         raise HTTPException(status_code=400, detail="Query is required")
 
-    q_lower = query.lower()
-    is_booking = any(w in q_lower for w in ["book", "reserve", "hotel", "stay", "cab", "taxi", "guide", "pass", "ticket", "spots"])
-
-    ai_reply = call_gemini(query, system_instruction=f"You are TourMitra AI for {dest}. Provide warm, concise, practical travel answers.")
-    if ai_reply:
-        return {
-            "text": ai_reply,
-            "isBookingIntent": is_booking,
-            "bookingCategory": "hotels" if "hotel" in q_lower else "taxis" if "cab" in q_lower else "guides" if "guide" in q_lower else "spots",
-            "suggestions": ["🎟️ Open Spots & Stays Studio", "Tell me about Sinhagad Fort", "What are best food spots?"]
-        }
-
-    return {
-        "text": f"Namaste! I am **TourMitra (तूर मित्र)**, your AI travel companion for {dest}. I can help you with 24 spots, fort treks, authentic food, EV cabs and instant bookings.",
-        "isBookingIntent": is_booking,
-        "bookingCategory": "spots",
-        "suggestions": ["Tell me about Shaniwar Wada & Sinhagad Fort", "What are authentic food spots?", "🎟️ I want to book a complete tour"]
-    }
+    return process_tourmitra_chat(query, dest, history)
 
 @app.post("/api/ai/adapt-weather")
 async def adapt_weather(body: Dict[str, Any] = Body(...)):
@@ -707,7 +689,21 @@ async def patch_sos(s_id: str, body: Dict[str, Any] = Body(...)):
             if "notes" in body:
                 s["notes"] = body["notes"]
             return s
-    raise HTTPException(status_code=404, detail="SOS record not found")
+dist_dir = os.path.join(os.path.dirname(__file__), "dist")
+if os.path.exists(os.path.join(dist_dir, "assets")):
+    app.mount("/assets", StaticFiles(directory=os.path.join(dist_dir, "assets")), name="assets")
+
+@app.get("/{full_path:path}")
+async def serve_spa_app(full_path: str):
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="API route not found")
+    file_path = os.path.join(dist_dir, full_path)
+    if full_path and os.path.exists(file_path) and os.path.isfile(file_path):
+        return FileResponse(file_path)
+    index_file = os.path.join(dist_dir, "index.html")
+    if os.path.exists(index_file):
+        return FileResponse(index_file)
+    return {"status": "FastAPI Active", "message": "Run npm run build to generate frontend dist"}
 
 if __name__ == "__main__":
     print(f"TOURMASTER Python FastAPI Server running on http://127.0.0.1:{PORT}")

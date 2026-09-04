@@ -154,6 +154,12 @@ Need to book a tour? As a verified tourist, you can easily customize and book Sp
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
 
+    // Keep multi-turn context
+    const currentHistory = messages.slice(-10).map((m) => ({
+      sender: m.sender,
+      text: m.text,
+    }));
+
     setMessages((prev) => [...prev, userMsg]);
     setInputText('');
     setIsLoading(true);
@@ -165,6 +171,7 @@ Need to book a tour? As a verified tourist, you can easily customize and book Sp
         body: JSON.stringify({
           query,
           destination,
+          history: currentHistory,
         }),
       });
 
@@ -192,7 +199,7 @@ Need to book a tour? As a verified tourist, you can easily customize and book Sp
         sender: 'assistant',
         text: isLocalBookingQuery
           ? `I can help you book your tourism tour in ${destination}! As a tourist, you can select spots, stays, food, taxis, and guides in one click below.`
-          : `As your TourMaster guide in ${destination}, remember to stay hydrated, respect sacred customs, and keep our 1-click SOS button accessible if needed.`,
+          : `Namaste! As your TourMitra guide in ${destination}, feel free to chat with me in general English, Hinglish, or Marathi about places to chill, authentic food, EV cabs, or emergency safety!`,
         timestamp: 'Just now',
         isBookingIntent: isLocalBookingQuery,
         bookingCategory: 'spots',
@@ -222,11 +229,11 @@ Need to book a tour? As a verified tourist, you can easily customize and book Sp
                   TourMitra (तूर मित्र) AI Assistant
                 </h3>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
-                  Gemini 3.7 Flash
+                  Gemini 3.7 Flash Trained
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                Your 24/7 Multilingual Cultural Guide & Trip Companion for {destination}
+                24/7 Multilingual & General Language AI Companion for {destination}
               </p>
             </div>
           </div>
@@ -242,6 +249,13 @@ Need to book a tour? As a verified tourist, you can easily customize and book Sp
         {/* Quick Prompt Category Chips */}
         <div className="px-4 py-2 bg-slate-950/60 border-b border-slate-800/80 flex items-center space-x-2 overflow-x-auto text-xs">
           <button
+            onClick={() => handleSendMessage('Hey TourMitra wassup bro! I am chilling in town, suggest something fun and relaxing to do in friendly conversational tone')}
+            className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 font-bold whitespace-nowrap shadow-sm"
+          >
+            <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+            <span>💬 Casual Chat & Chill</span>
+          </button>
+          <button
             onClick={() => handleSendMessage('I want to book a tourism tour package (Spots, Stays, Food, Taxis and Guides)')}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold whitespace-nowrap shadow-sm"
           >
@@ -249,32 +263,39 @@ Need to book a tour? As a verified tourist, you can easily customize and book Sp
             <span>🎟️ Book Tourism Tour</span>
           </button>
           <button
-            onClick={() => handleSendMessage('Tell me the history, architecture, and legends of the famous monuments here')}
+            onClick={() => handleSendMessage('Bhai yahan ke sabse best Misal Pav aur street food secrets batao Hinglish mein!')}
+            className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap"
+          >
+            <Utensils className="w-3.5 h-3.5 text-rose-400" />
+            <span>🍲 Foodie Secrets (Hinglish)</span>
+          </button>
+          <button
+            onClick={() => handleSendMessage('Tell me the history, architecture, and legends of the famous monuments and forts here')}
             className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap"
           >
             <Landmark className="w-3.5 h-3.5 text-amber-400" />
             <span>Monuments Lore</span>
           </button>
           <button
-            onClick={() => handleSendMessage('What are authentic local street foods and sweets I must try in this city?')}
-            className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap"
-          >
-            <Utensils className="w-3.5 h-3.5 text-rose-400" />
-            <span>Foodie Secrets</span>
-          </button>
-          <button
-            onClick={() => handleSendMessage('Give me essential Hindi / local phrases for bargaining, asking directions, and polite greetings')}
+            onClick={() => handleSendMessage('Give me essential Marathi & Hindi phrases for bargaining, directions, and polite greetings')}
             className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap"
           >
             <Languages className="w-3.5 h-3.5 text-cyan-400" />
             <span>Local Translations</span>
           </button>
           <button
-            onClick={() => handleSendMessage('How can I make my travel in this city 100% eco-friendly and support local artisans?')}
+            onClick={() => handleSendMessage('How can I make my travel 100% eco-friendly with EV Cabs and support local artisans?')}
             className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap"
           >
             <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
             <span>Green Travel Tips</span>
+          </button>
+          <button
+            onClick={() => handleSendMessage('What are emergency helpline numbers and safety tips for tourists in distress?')}
+            className="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 whitespace-nowrap"
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />
+            <span>🚨 Safety & SOS</span>
           </button>
         </div>
 
