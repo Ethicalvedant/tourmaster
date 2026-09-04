@@ -232,38 +232,55 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
     }
   };
 
-  // Pricing calculations
+  // Dynamic Pricing calculations across all selected facilities
   const spotsTotal = useMemo(() => {
-    return selectedSpots.reduce((sum, s) => sum + (s.entryFee * travelersCount), 0);
+    return selectedSpots.reduce((sum, s) => sum + ((s.entryFee || 0) * (travelersCount || 1)), 0);
   }, [selectedSpots, travelersCount]);
 
   const hotelTotal = useMemo(() => {
     if (!selectedHotel) return 0;
-    return selectedHotel.item.pricePerNight * selectedHotel.rooms * selectedHotel.nights;
+    const rate = selectedHotel.item?.pricePerNight || 1500;
+    const rooms = selectedHotel.rooms || 1;
+    const nights = selectedHotel.nights || 1;
+    return rate * rooms * nights;
   }, [selectedHotel]);
 
   const diningTotal = useMemo(() => {
-    return selectedRestaurants.reduce((sum, r) => sum + (r.item.priceForTwo * Math.ceil(r.guests / 2)), 0);
-  }, [selectedRestaurants]);
+    return selectedRestaurants.reduce((sum, r) => {
+      const costForTwo = r.item?.priceForTwo || 400;
+      const guests = r.guests || travelersCount || 2;
+      return sum + (costForTwo * Math.ceil(guests / 2));
+    }, 0);
+  }, [selectedRestaurants, travelersCount]);
 
   const activitiesTotal = useMemo(() => {
-    return selectedActivities.reduce((sum, a) => sum + (a.item.approxEntryFee * a.tickets), 0);
-  }, [selectedActivities]);
+    return selectedActivities.reduce((sum, a) => {
+      const fee = a.item?.approxEntryFee || (a.item as any)?.approxPrice || 100;
+      const tix = a.tickets || travelersCount || 1;
+      return sum + (fee * tix);
+    }, 0);
+  }, [selectedActivities, travelersCount]);
 
   const taxiTotal = useMemo(() => {
     if (!selectedTaxi) return 0;
-    const base = selectedTaxi.route.fareAmount || 1800;
+    const rawFare = selectedTaxi.route?.fareAmount || 
+      (selectedTaxi.route?.approxTaxiFare ? parseInt(String(selectedTaxi.route.approxTaxiFare).replace(/[^0-9]/g, '')) : 1800) || 1800;
     const multiplier = selectedTaxi.vehicleType === 'SUV' ? 1.4 : selectedTaxi.vehicleType === 'EV Cab' ? 0.95 : 1.1;
-    return Math.round(base * multiplier);
+    return Math.round(rawFare * multiplier);
   }, [selectedTaxi]);
 
   const guideTotal = useMemo(() => {
     if (!selectedGuide) return 0;
-    const price = selectedGuide.item.priceINR || selectedGuide.item.dailyRate || 500;
-    return price * selectedGuide.days;
+    const price = selectedGuide.item?.priceINR || 
+      selectedGuide.item?.priceInr || 
+      selectedGuide.item?.dailyRate || 
+      (selectedGuide.item?.approxGuidePrice ? parseInt(String(selectedGuide.item.approxGuidePrice).replace(/[^0-9]/g, '')) : 500) || 500;
+    const days = selectedGuide.days || 1;
+    return price * days;
   }, [selectedGuide]);
 
   const grandTotal = spotsTotal + hotelTotal + diningTotal + activitiesTotal + taxiTotal + guideTotal;
+  const totalConfiguredFacilities = selectedSpots.length + (selectedHotel ? 1 : 0) + selectedRestaurants.length + selectedActivities.length + (selectedTaxi ? 1 : 0) + (selectedGuide ? 1 : 0);
 
   // Proceed to booking checkout (only allowed for tourists)
   const handleProceedToBooking = () => {
@@ -326,19 +343,27 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               Select Spots, Stays, Food, Taxis & Guides
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Choose your favorite tourism spots and optionally configure hotels, dining, entertainment, taxi routes, and certified guides for a complete one-click booking.
+              Choose your favorite tourism spots and optionally configure hotels, dining, entertainment, taxi routes, and certified guides with instant live amount calculation.
             </p>
           </div>
 
-          {/* Real-time Configured Tour & Facilities Indicator */}
-          <div className="bg-slate-950/80 border border-emerald-500/40 p-4 rounded-2xl flex flex-col items-end justify-center min-w-[200px] shadow-lg">
-            <div className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider">Custom Tour Hub</div>
-            <div className="text-xl sm:text-2xl font-black text-emerald-400 flex items-center">
-              <span>{selectedSpots.length} Spot{selectedSpots.length !== 1 ? 's' : ''} Selected</span>
+          {/* Real-time Configured Tour & Facilities Indicator with Live Dynamic Total */}
+          <div className="bg-slate-950/80 border border-emerald-500/40 p-4 rounded-2xl flex flex-col items-end justify-center min-w-[220px] shadow-lg">
+            <div className="flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              <span>Live Tour Estimate</span>
             </div>
-            <div className="text-[10px] text-slate-400 mt-0.5">
-              {travelersCount} Traveler{travelersCount > 1 ? 's' : ''} • Departure: {formattedSelectedDate}
+            <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-display flex items-baseline space-x-1 mt-0.5">
+              <span>₹{grandTotal.toLocaleString('en-IN')}</span>
             </div>
+            <div className="text-[11px] text-slate-300 font-medium mt-0.5">
+              {selectedSpots.length} Spot{selectedSpots.length !== 1 ? 's' : ''} • {totalConfiguredFacilities} Item{totalConfiguredFacilities !== 1 ? 's' : ''} • {travelersCount} Traveler{travelersCount > 1 ? 's' : ''}
+            </div>
+            {grandTotal > 0 && (
+              <div className="text-[10px] text-emerald-400/80 font-semibold mt-1">
+                ≈ ₹{Math.round(grandTotal / (travelersCount || 1)).toLocaleString('en-IN')} / person
+              </div>
+            )}
           </div>
         </div>
 
@@ -597,16 +622,16 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
         </div>
       )}
 
-      {/* 6 Category Navigation Tabs */}
+      {/* 7 Category Navigation Tabs with Live Added Amounts */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2 bg-slate-900/90 p-2 rounded-2xl border border-slate-800 text-xs font-semibold">
         {[
-          { id: 'spots', label: '1. Tourism Spots', icon: MapPin, count: selectedSpots.length, color: 'text-emerald-400' },
-          { id: 'hotels', label: '2. Hotels (Opt)', icon: Hotel, count: selectedHotel ? 1 : 0, color: 'text-teal-400' },
-          { id: 'restaurants', label: '3. Food (Opt)', icon: Utensils, count: selectedRestaurants.length, color: 'text-amber-400' },
-          { id: 'activities', label: '4. Activities (Opt)', icon: Sparkles, count: selectedActivities.length, color: 'text-purple-400' },
-          { id: 'taxis', label: '5. Taxi / Cab (Opt)', icon: Car, count: selectedTaxi ? 1 : 0, color: 'text-cyan-400' },
-          { id: 'guides', label: '6. Guides (Opt)', icon: UserCheck, count: selectedGuide ? 1 : 0, color: 'text-blue-400' },
-          { id: 'summary', label: '7. Checkout', icon: CheckCircle2, count: null, color: 'text-emerald-300' },
+          { id: 'spots', label: '1. Spots', icon: MapPin, count: selectedSpots.length, amount: spotsTotal, color: 'text-emerald-400' },
+          { id: 'hotels', label: '2. Hotels (Opt)', icon: Hotel, count: selectedHotel ? 1 : 0, amount: hotelTotal, color: 'text-teal-400' },
+          { id: 'restaurants', label: '3. Food (Opt)', icon: Utensils, count: selectedRestaurants.length, amount: diningTotal, color: 'text-amber-400' },
+          { id: 'activities', label: '4. Activities (Opt)', icon: Sparkles, count: selectedActivities.length, amount: activitiesTotal, color: 'text-purple-400' },
+          { id: 'taxis', label: '5. Taxi (Opt)', icon: Car, count: selectedTaxi ? 1 : 0, amount: taxiTotal, color: 'text-cyan-400' },
+          { id: 'guides', label: '6. Guides (Opt)', icon: UserCheck, count: selectedGuide ? 1 : 0, amount: guideTotal, color: 'text-blue-400' },
+          { id: 'summary', label: '7. Checkout', icon: CheckCircle2, count: totalConfiguredFacilities, amount: grandTotal, color: 'text-emerald-300' },
         ].map((tab) => {
           const TabIcon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -614,21 +639,32 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             <button
               key={tab.id}
               onClick={() => handleSetTab(tab.id as any)}
-              className={`p-2.5 rounded-xl flex items-center justify-center space-x-1.5 transition-all text-left ${
+              className={`p-2.5 rounded-xl flex flex-col justify-between space-y-1.5 transition-all text-left ${
                 isActive
                   ? 'bg-emerald-500 text-slate-950 font-bold shadow-md shadow-emerald-500/20'
                   : 'bg-slate-950/60 text-slate-400 hover:text-white hover:bg-slate-800'
               }`}
             >
-              <TabIcon className={`w-3.5 h-3.5 ${isActive ? 'text-slate-950' : tab.color}`} />
-              <span className="truncate">{tab.label}</span>
-              {tab.count !== null && tab.count > 0 && (
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                  isActive ? 'bg-slate-950 text-emerald-400' : 'bg-emerald-500/20 text-emerald-300'
-                }`}>
-                  {tab.count}
-                </span>
-              )}
+              <div className="flex items-center space-x-1.5 truncate">
+                <TabIcon className={`w-3.5 h-3.5 flex-shrink-0 ${isActive ? 'text-slate-950' : tab.color}`} />
+                <span className="truncate text-xs">{tab.label}</span>
+              </div>
+              <div className="flex items-center justify-between text-[10px] w-full">
+                {tab.count !== null && tab.count > 0 ? (
+                  <span className={`px-1.5 py-0.2 rounded-full font-bold ${
+                    isActive ? 'bg-slate-950 text-emerald-400' : 'bg-emerald-500/20 text-emerald-300'
+                  }`}>
+                    {tab.count}
+                  </span>
+                ) : (
+                  <span className="text-[10px] opacity-40">0</span>
+                )}
+                {tab.amount > 0 && (
+                  <span className={`font-extrabold text-[11px] ${isActive ? 'text-slate-950' : 'text-emerald-400'}`}>
+                    ₹{tab.amount.toLocaleString('en-IN')}
+                  </span>
+                )}
+              </div>
             </button>
           );
         })}
@@ -816,8 +852,12 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       <span className="text-[10px] text-slate-500 block">Distance & Entry Fee</span>
                       <div className="flex items-center space-x-1.5 mt-0.5">
                         <span className="text-[11px] text-emerald-300 font-semibold">📍 {spot.distanceFromPune || 'Pune Hub'}</span>
-                        <span className="text-[11px] text-white font-bold bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
-                          {spot.entryFee ? `₹${spot.entryFee}/person` : 'Free Entry'}
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded border transition-all ${
+                          isSelected 
+                            ? 'bg-emerald-500 text-slate-950 border-emerald-400 font-black' 
+                            : 'bg-slate-950 text-white border-slate-800'
+                        }`}>
+                          {spot.entryFee ? (isSelected ? `✓ Added (+₹${spot.entryFee * travelersCount})` : `₹${spot.entryFee}/person`) : (isSelected ? '✓ Added (Free)' : 'Free Entry')}
                         </span>
                       </div>
                     </div>
@@ -831,13 +871,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             })}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-300 font-semibold">
-              Selected <span className="text-emerald-400 font-bold">{selectedSpots.length} spot(s)</span> for custom itinerary & circuit
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <div className="text-xs text-slate-300 flex flex-wrap items-center gap-2">
+              <span>Selected <strong className="text-emerald-400">{selectedSpots.length} spot(s)</strong></span>
+              <span className="text-slate-500">•</span>
+              <span>Spots Total: <strong className="text-emerald-300 font-bold text-sm">₹{spotsTotal.toLocaleString('en-IN')}</strong> ({travelersCount} visitors)</span>
+              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">Live Tour Total: <strong className="text-emerald-400 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</strong></span>
+            </div>
             <button
               onClick={() => handleSetTab('hotels')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md flex-shrink-0"
             >
               <span>Next: Select Hotels (Optional)</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -928,11 +972,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       }}
                       className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                         isSelected 
-                          ? 'bg-teal-500 text-slate-950' 
+                          ? 'bg-teal-500 text-slate-950 font-black' 
                           : 'bg-slate-800 hover:bg-slate-700 text-white'
                       }`}
                     >
-                      {isSelected ? '✓ Selected' : '+ Select Hotel'}
+                      {isSelected ? `✓ Selected (+₹${(hotel.pricePerNight || 1500).toLocaleString('en-IN')})` : '+ Select Hotel'}
                     </button>
                   </div>
                 </div>
@@ -940,13 +984,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             })}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-300 font-semibold">
-              Selected Hotel: <span className="text-teal-400 font-bold">{selectedHotel ? selectedHotel.item.hotelName : 'None (Optional)'}</span>
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <div className="text-xs text-slate-300 flex flex-wrap items-center gap-2">
+              <span>Selected Stay: <strong className="text-teal-400">{selectedHotel ? selectedHotel.item.hotelName : 'None'}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span>Hotel Total: <strong className="text-teal-300 font-bold text-sm">₹{hotelTotal.toLocaleString('en-IN')}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">Live Tour Total: <strong className="text-emerald-400 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</strong></span>
+            </div>
             <button
               onClick={() => handleSetTab('restaurants')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md flex-shrink-0"
             >
               <span>Next: Food & Dining (Optional)</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1034,11 +1082,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       }}
                       className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                         isSelected 
-                          ? 'bg-amber-500 text-slate-950' 
+                          ? 'bg-amber-500 text-slate-950 font-black' 
                           : 'bg-slate-800 hover:bg-slate-700 text-white'
                       }`}
                     >
-                      {isSelected ? '✓ Selected' : '+ Add Meal'}
+                      {isSelected ? `✓ Added (+₹${((rest.priceForTwo || 400) * Math.ceil(travelersCount / 2)).toLocaleString('en-IN')})` : '+ Add Meal'}
                     </button>
                   </div>
                 </div>
@@ -1046,13 +1094,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             })}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-300 font-semibold">
-              Selected Dining: <span className="text-amber-400 font-bold">{selectedRestaurants.length} venue(s)</span>
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <div className="text-xs text-slate-300 flex flex-wrap items-center gap-2">
+              <span>Selected Dining: <strong className="text-amber-400">{selectedRestaurants.length} venue(s)</strong></span>
+              <span className="text-slate-500">•</span>
+              <span>Dining Total: <strong className="text-amber-300 font-bold text-sm">₹{diningTotal.toLocaleString('en-IN')}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">Live Tour Total: <strong className="text-emerald-400 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</strong></span>
+            </div>
             <button
               onClick={() => handleSetTab('activities')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md flex-shrink-0"
             >
               <span>Next: Entertainment & Activities</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1124,11 +1176,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       }}
                       className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                         isSelected 
-                          ? 'bg-purple-600 text-white' 
+                          ? 'bg-purple-600 text-white font-black' 
                           : 'bg-slate-800 hover:bg-slate-700 text-white'
                       }`}
                     >
-                      {isSelected ? '✓ Added' : '+ Add Activity'}
+                      {isSelected ? `✓ Added (+₹${((act.approxEntryFee || 100) * travelersCount).toLocaleString('en-IN')})` : '+ Add Activity'}
                     </button>
                   </div>
                 </div>
@@ -1136,13 +1188,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             })}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-300 font-semibold">
-              Selected Activities: <span className="text-purple-400 font-bold">{selectedActivities.length} experience(s)</span>
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <div className="text-xs text-slate-300 flex flex-wrap items-center gap-2">
+              <span>Selected Activities: <strong className="text-purple-400">{selectedActivities.length} experience(s)</strong></span>
+              <span className="text-slate-500">•</span>
+              <span>Activities Total: <strong className="text-purple-300 font-bold text-sm">₹{activitiesTotal.toLocaleString('en-IN')}</strong> ({travelersCount} tickets)</span>
+              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">Live Tour Total: <strong className="text-emerald-400 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</strong></span>
+            </div>
             <button
               onClick={() => handleSetTab('taxis')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md flex-shrink-0"
             >
               <span>Next: Taxi & Cab Transit</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1231,11 +1287,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       }}
                       className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                         isSelected 
-                          ? 'bg-cyan-500 text-slate-950' 
+                          ? 'bg-cyan-500 text-slate-950 font-black' 
                           : 'bg-slate-800 hover:bg-slate-700 text-white'
                       }`}
                     >
-                      {isSelected ? '✓ Selected' : '+ Book Taxi'}
+                      {isSelected ? `✓ Selected (+₹${taxiTotal.toLocaleString('en-IN')})` : '+ Book Taxi'}
                     </button>
                   </div>
                 </div>
@@ -1243,13 +1299,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             })}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-300 font-semibold">
-              Selected Taxi: <span className="text-cyan-400 font-bold">{selectedTaxi ? `Pune ➔ ${selectedTaxi.route.tourismSpot} (${selectedTaxi.vehicleType})` : 'None (Optional)'}</span>
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <div className="text-xs text-slate-300 flex flex-wrap items-center gap-2">
+              <span>Selected Transit: <strong className="text-cyan-400">{selectedTaxi ? `Pune ➔ ${selectedTaxi.route.tourismSpot} (${selectedTaxi.vehicleType})` : 'None'}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span>Taxi Total: <strong className="text-cyan-300 font-bold text-sm">₹{taxiTotal.toLocaleString('en-IN')}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">Live Tour Total: <strong className="text-emerald-400 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</strong></span>
+            </div>
             <button
               onClick={() => handleSetTab('guides')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md flex-shrink-0"
             >
               <span>Next: Tour Guides</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1342,11 +1402,11 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       }}
                       className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all ${
                         isSelected 
-                          ? 'bg-blue-500 text-slate-950' 
+                          ? 'bg-blue-500 text-slate-950 font-black' 
                           : 'bg-slate-800 hover:bg-slate-700 text-white'
                       }`}
                     >
-                      {isSelected ? '✓ Assigned' : '+ Hire Guide'}
+                      {isSelected ? `✓ Assigned (+₹${guideTotal.toLocaleString('en-IN')})` : '+ Hire Guide'}
                     </button>
                   </div>
                 </div>
@@ -1354,13 +1414,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
             })}
           </div>
 
-          <div className="flex items-center justify-between p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
-            <span className="text-xs text-slate-300 font-semibold">
-              Selected Guide: <span className="text-blue-400 font-bold">{selectedGuide ? (selectedGuide.item.guideName || selectedGuide.item.name) : 'None (Optional)'}</span>
-            </span>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 bg-slate-900/90 rounded-2xl border border-slate-800">
+            <div className="text-xs text-slate-300 flex flex-wrap items-center gap-2">
+              <span>Selected Guide: <strong className="text-blue-400">{selectedGuide ? (selectedGuide.item.guideName || selectedGuide.item.name) : 'None'}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span>Guide Total: <strong className="text-blue-300 font-bold text-sm">₹{guideTotal.toLocaleString('en-IN')}</strong></span>
+              <span className="text-slate-500">•</span>
+              <span className="text-slate-400">Live Tour Total: <strong className="text-emerald-400 font-extrabold">₹{grandTotal.toLocaleString('en-IN')}</strong></span>
+            </div>
             <button
               onClick={() => handleSetTab('summary')}
-              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center space-x-1.5 transition-all"
+              className="px-4 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-xl text-xs flex items-center justify-center space-x-1.5 transition-all shadow-md flex-shrink-0"
             >
               <span>Review & Make Booking</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -1387,145 +1451,327 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
               </span>
             </div>
 
-            {/* Selected Items Breakdown Table */}
-            <div className="space-y-3">
-              {/* 1. Spots */}
-              <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2">
+            {/* Itemized Transparent Invoice & Facilities Pricing Breakdown Table */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+                  <IndianRupee className="w-4 h-4 text-emerald-400" />
+                  <span>Configured Facilities & Line-Item Cost Breakdown</span>
+                </h4>
+                <span className="text-[11px] text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-0.5 rounded-full border border-emerald-500/20">
+                  {totalConfiguredFacilities} Item(s) Selected
+                </span>
+              </div>
+
+              {/* 1. Spots Itemized */}
+              <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2.5">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center space-x-2 text-emerald-400 font-bold">
                     <MapPin className="w-4 h-4" />
-                    <span>Tourism Spots ({selectedSpots.length})</span>
+                    <span>1. Tourism Spots & Circuit ({selectedSpots.length})</span>
                   </div>
-                  <span className="text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                    Itinerary Confirmed
+                  <span className="font-extrabold text-emerald-400 text-xs">
+                    Subtotal: ₹{spotsTotal.toLocaleString('en-IN')}
                   </span>
                 </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedSpots.map(s => (
-                    <span key={s.id} className="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 text-xs border border-slate-800 flex items-center space-x-1">
-                      <span>{s.name} ({s.city})</span>
-                      <button onClick={() => handleToggleSpot(s)} className="text-slate-500 hover:text-rose-400 ml-1">✕</button>
-                    </span>
-                  ))}
-                </div>
+                {selectedSpots.length > 0 ? (
+                  <div className="divide-y divide-slate-800/60 text-xs">
+                    {selectedSpots.map(s => (
+                      <div key={s.id} className="py-2 flex items-center justify-between text-slate-300">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-semibold text-white">{s.name}</span>
+                          <span className="text-[10px] text-slate-400">({s.city} • {s.category})</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <span className="text-[11px] text-slate-400">
+                            {s.entryFee ? `₹${s.entryFee} × ${travelersCount} visitors` : 'Free entry'}
+                          </span>
+                          <span className="font-bold text-emerald-300 w-16 text-right">
+                            ₹{(s.entryFee * travelersCount).toLocaleString('en-IN')}
+                          </span>
+                          <button onClick={() => handleToggleSpot(s)} className="text-slate-500 hover:text-rose-400 text-xs font-bold ml-1">✕</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-500 italic">No spots selected yet.</p>
+                )}
               </div>
 
-              {/* 2. Hotel */}
+              {/* 2. Hotel Itemized */}
               {selectedHotel && (
-                <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 text-teal-400 font-bold">
-                    <Hotel className="w-4 h-4" />
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-teal-400 font-bold">
+                    <div className="flex items-center space-x-2">
+                      <Hotel className="w-4 h-4" />
+                      <span>2. Accommodation & Stay</span>
+                    </div>
+                    <span className="font-extrabold text-teal-400">
+                      Subtotal: ₹{hotelTotal.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 pt-1">
                     <div>
-                      <div>{selectedHotel.item.hotelName}</div>
-                      <div className="text-[10px] text-slate-400 font-normal">
-                        Near {selectedHotel.item.tourismSpot} • {selectedHotel.rooms} Room × {selectedHotel.nights} Night
-                      </div>
+                      <span className="font-semibold text-white">{selectedHotel.item.hotelName}</span>
+                      <span className="text-[10px] text-slate-400 ml-2">
+                        Near {selectedHotel.item.tourismSpot} • {selectedHotel.rooms} Room(s) × {selectedHotel.nights} Night(s)
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-[11px] text-slate-400">
+                        ₹{selectedHotel.item.pricePerNight?.toLocaleString('en-IN') || 1500}/night
+                      </span>
+                      <span className="font-bold text-teal-300 w-16 text-right">
+                        ₹{hotelTotal.toLocaleString('en-IN')}
+                      </span>
+                      <button onClick={() => setSelectedHotel(null)} className="text-slate-500 hover:text-rose-400 text-xs font-bold ml-1">✕</button>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-teal-300 bg-teal-500/20 px-2 py-0.5 rounded-full border border-teal-500/30">
-                    Stay Reserved
-                  </span>
                 </div>
               )}
 
-              {/* 3. Dining */}
+              {/* 3. Dining Itemized */}
               {selectedRestaurants.length > 0 && (
-                <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2 text-xs">
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2 text-xs">
                   <div className="flex items-center justify-between text-amber-400 font-bold">
                     <div className="flex items-center space-x-2">
                       <Utensils className="w-4 h-4" />
-                      <span>Dining ({selectedRestaurants.length})</span>
+                      <span>3. Dining Reservations ({selectedRestaurants.length})</span>
                     </div>
-                    <span className="text-[10px] font-bold text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30">
-                      Table Scheduled
+                    <span className="font-extrabold text-amber-400">
+                      Subtotal: ₹{diningTotal.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="divide-y divide-slate-800/60">
                     {selectedRestaurants.map(r => (
-                      <span key={r.item.id} className="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 text-xs border border-slate-800">
-                        {r.item.restaurantName} ({r.item.cuisine})
-                      </span>
+                      <div key={r.item.id} className="py-2 flex items-center justify-between text-slate-300">
+                        <div>
+                          <span className="font-semibold text-white">{r.item.restaurantName}</span>
+                          <span className="text-[10px] text-slate-400 ml-2">({r.item.cuisine} • {r.item.tourismSpot})</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <span className="text-[11px] text-slate-400">
+                            ₹{r.item.priceForTwo}/two × {Math.ceil(travelersCount / 2)}
+                          </span>
+                          <span className="font-bold text-amber-300 w-16 text-right">
+                            ₹{(r.item.priceForTwo * Math.ceil(travelersCount / 2)).toLocaleString('en-IN')}
+                          </span>
+                          <button onClick={() => setSelectedRestaurants(selectedRestaurants.filter(item => item.item.id !== r.item.id))} className="text-slate-500 hover:text-rose-400 text-xs font-bold ml-1">✕</button>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* 4. Activities */}
+              {/* 4. Activities Itemized */}
               {selectedActivities.length > 0 && (
-                <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 space-y-2 text-xs">
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2 text-xs">
                   <div className="flex items-center justify-between text-purple-400 font-bold">
                     <div className="flex items-center space-x-2">
                       <Sparkles className="w-4 h-4" />
-                      <span>Activities ({selectedActivities.length})</span>
+                      <span>4. Entertainment & Experiences ({selectedActivities.length})</span>
                     </div>
-                    <span className="text-[10px] font-bold text-purple-300 bg-purple-500/20 px-2 py-0.5 rounded-full border border-purple-500/30">
-                      Pass Included
+                    <span className="font-extrabold text-purple-400">
+                      Subtotal: ₹{activitiesTotal.toLocaleString('en-IN')}
                     </span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="divide-y divide-slate-800/60">
                     {selectedActivities.map(a => (
-                      <span key={a.item.id} className="px-2.5 py-1 rounded-lg bg-slate-900 text-slate-300 text-xs border border-slate-800">
-                        {a.item.entertainmentPlace}
-                      </span>
+                      <div key={a.item.id} className="py-2 flex items-center justify-between text-slate-300">
+                        <div>
+                          <span className="font-semibold text-white">{a.item.entertainmentPlace}</span>
+                          <span className="text-[10px] text-slate-400 ml-2">({a.item.category} • {a.item.tourismSpot})</span>
+                        </div>
+                        <div className="flex items-center space-x-3">
+                          <span className="text-[11px] text-slate-400">
+                            ₹{a.item.approxEntryFee || 100} × {travelersCount} tickets
+                          </span>
+                          <span className="font-bold text-purple-300 w-16 text-right">
+                            ₹{((a.item.approxEntryFee || 100) * travelersCount).toLocaleString('en-IN')}
+                          </span>
+                          <button onClick={() => setSelectedActivities(selectedActivities.filter(item => item.item.id !== a.item.id))} className="text-slate-500 hover:text-rose-400 text-xs font-bold ml-1">✕</button>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
               )}
 
-              {/* 5. Taxi */}
+              {/* 5. Taxi Itemized */}
               {selectedTaxi && (
-                <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 text-cyan-400 font-bold">
-                    <Car className="w-4 h-4" />
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-cyan-400 font-bold">
+                    <div className="flex items-center space-x-2">
+                      <Car className="w-4 h-4" />
+                      <span>5. Dedicated Transit Cab</span>
+                    </div>
+                    <span className="font-extrabold text-cyan-400">
+                      Subtotal: ₹{taxiTotal.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 pt-1">
                     <div>
-                      <div>Pune ➔ {selectedTaxi.route.tourismSpot} ({selectedTaxi.vehicleType})</div>
-                      <div className="text-[10px] text-slate-400 font-normal">Dedicated Sightseeing Transit</div>
+                      <span className="font-semibold text-white">Pune ➔ {selectedTaxi.route.tourismSpot}</span>
+                      <span className="text-[10px] text-slate-400 ml-2">({selectedTaxi.vehicleType} • {selectedTaxi.route.distanceFromPune})</span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-[11px] text-slate-400">Fixed Transit Rate</span>
+                      <span className="font-bold text-cyan-300 w-16 text-right">
+                        ₹{taxiTotal.toLocaleString('en-IN')}
+                      </span>
+                      <button onClick={() => setSelectedTaxi(null)} className="text-slate-500 hover:text-rose-400 text-xs font-bold ml-1">✕</button>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded-full border border-cyan-500/30">
-                    Cab Dispatched
-                  </span>
                 </div>
               )}
 
-              {/* 6. Guide */}
+              {/* 6. Guide Itemized */}
               {selectedGuide && (
-                <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800/80 flex items-center justify-between text-xs">
-                  <div className="flex items-center space-x-2 text-blue-400 font-bold">
-                    <UserCheck className="w-4 h-4" />
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-2 text-xs">
+                  <div className="flex items-center justify-between text-blue-400 font-bold">
+                    <div className="flex items-center space-x-2">
+                      <UserCheck className="w-4 h-4" />
+                      <span>6. Certified Heritage Tour Guide</span>
+                    </div>
+                    <span className="font-extrabold text-blue-400">
+                      Subtotal: ₹{guideTotal.toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-slate-300 pt-1">
                     <div>
-                      <div>{selectedGuide.item.guideName} ({selectedGuide.item.tourismSpot})</div>
-                      <div className="text-[10px] text-slate-400 font-normal">Languages: {selectedGuide.item.languages.join(', ')}</div>
+                      <span className="font-semibold text-white">{selectedGuide.item.guideName || selectedGuide.item.name}</span>
+                      <span className="text-[10px] text-slate-400 ml-2">
+                        Destination: {selectedGuide.item.tourismSpot} • {selectedGuide.days} Day(s)
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-3">
+                      <span className="text-[11px] text-slate-400">
+                        ₹{selectedGuide.item.priceINR || 500}/day
+                      </span>
+                      <span className="font-bold text-blue-300 w-16 text-right">
+                        ₹{guideTotal.toLocaleString('en-IN')}
+                      </span>
+                      <button onClick={() => setSelectedGuide(null)} className="text-slate-500 hover:text-rose-400 text-xs font-bold ml-1">✕</button>
                     </div>
                   </div>
-                  <span className="text-[10px] font-bold text-blue-300 bg-blue-500/20 px-2 py-0.5 rounded-full border border-blue-500/30">
-                    Guide Assigned
-                  </span>
                 </div>
               )}
             </div>
 
-            {/* Total Facilities Confirmation & Action */}
-            <div className="p-6 rounded-2xl bg-gradient-to-tr from-emerald-950/80 via-slate-900 to-slate-950 border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <span className="text-xs text-slate-400 font-semibold uppercase">Unified Digital Pass</span>
-                <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-display">
-                  {selectedSpots.length} Spot{selectedSpots.length !== 1 ? 's' : ''} & Facilities Ready
+            {/* Total Grand Invoice Box */}
+            <div className="p-6 rounded-2xl bg-gradient-to-tr from-emerald-950/90 via-slate-900 to-slate-950 border-2 border-emerald-500/50 shadow-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-1.5">
+                <div className="flex items-center space-x-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                  <span className="text-xs text-emerald-400 font-bold uppercase tracking-wider">Final Dynamic Total</span>
                 </div>
-                <span className="text-[11px] text-slate-400">Includes QR pass, booking guarantees, verified providers & SOS 24/7 coverage.</span>
+                <div className="text-3xl sm:text-4xl font-black text-emerald-400 font-display">
+                  ₹{grandTotal.toLocaleString('en-IN')}
+                </div>
+                <div className="text-xs text-slate-300">
+                  Total for <strong className="text-white">{travelersCount} Traveler{travelersCount > 1 ? 's' : ''}</strong> • 
+                  ≈ <strong className="text-emerald-300">₹{Math.round(grandTotal / (travelersCount || 1)).toLocaleString('en-IN')}</strong> / person
+                </div>
+                <div className="text-[11px] text-slate-400 pt-1">
+                  ✓ Verified Board Rates • QR Digital Pass • 24/7 SOS Coverage • Instant Confirmation
+                </div>
               </div>
 
               <button
                 onClick={handleProceedToBooking}
-                className="py-3 px-6 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black rounded-xl text-sm transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center space-x-2"
+                className="py-3.5 px-8 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black rounded-2xl text-base transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center space-x-2 cursor-pointer flex-shrink-0"
               >
                 <span>Make Booking & Generate Pass</span>
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-5 h-5 font-bold" />
               </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* ========================================================================= */}
+      {/* PERSISTENT STICKY LIVE PRICE ADDITION DOCK (Always updates dynamically) */}
+      {/* ========================================================================= */}
+      <div className="sticky bottom-4 z-40 max-w-5xl mx-auto px-2 transition-all">
+        <div className="bg-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/50 p-3.5 sm:p-4 rounded-2xl shadow-2xl shadow-black/80 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 animate-fade-in">
+          {/* Left: Total Amount with Glowing Indicator */}
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-bold flex-shrink-0">
+              <IndianRupee className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center space-x-2">
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-bold">Dynamic Tour Total</span>
+                <span className="px-2 py-0.2 rounded-full bg-emerald-500/20 text-emerald-400 text-[9px] font-extrabold border border-emerald-500/30">
+                  Live Added
+                </span>
+              </div>
+              <div className="text-xl sm:text-2xl font-black text-white flex items-baseline space-x-1.5">
+                <span className="text-emerald-400 font-display">₹{grandTotal.toLocaleString('en-IN')}</span>
+                <span className="text-[11px] text-slate-400 font-normal">
+                  ({travelersCount} traveler{travelersCount > 1 ? 's' : ''})
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Center: Live Cost Breakdown Pills */}
+          <div className="hidden lg:flex items-center space-x-1.5 text-[11px]">
+            <span className={`px-2 py-1 rounded-lg border transition-all ${
+              spotsTotal > 0 ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300 font-bold' : 'bg-slate-950/40 border-slate-800 text-slate-500'
+            }`}>
+              📍 Spots: ₹{spotsTotal.toLocaleString('en-IN')}
+            </span>
+            <span className={`px-2 py-1 rounded-lg border transition-all ${
+              hotelTotal > 0 ? 'bg-teal-950/60 border-teal-500/40 text-teal-300 font-bold' : 'bg-slate-950/40 border-slate-800 text-slate-500'
+            }`}>
+              🏨 Stay: ₹{hotelTotal.toLocaleString('en-IN')}
+            </span>
+            <span className={`px-2 py-1 rounded-lg border transition-all ${
+              diningTotal > 0 ? 'bg-amber-950/60 border-amber-500/40 text-amber-300 font-bold' : 'bg-slate-950/40 border-slate-800 text-slate-500'
+            }`}>
+              🍽️ Food: ₹{diningTotal.toLocaleString('en-IN')}
+            </span>
+            <span className={`px-2 py-1 rounded-lg border transition-all ${
+              activitiesTotal > 0 ? 'bg-purple-950/60 border-purple-500/40 text-purple-300 font-bold' : 'bg-slate-950/40 border-slate-800 text-slate-500'
+            }`}>
+              ✨ Act: ₹{activitiesTotal.toLocaleString('en-IN')}
+            </span>
+            <span className={`px-2 py-1 rounded-lg border transition-all ${
+              taxiTotal > 0 ? 'bg-cyan-950/60 border-cyan-500/40 text-cyan-300 font-bold' : 'bg-slate-950/40 border-slate-800 text-slate-500'
+            }`}>
+              🚕 Cab: ₹{taxiTotal.toLocaleString('en-IN')}
+            </span>
+            <span className={`px-2 py-1 rounded-lg border transition-all ${
+              guideTotal > 0 ? 'bg-blue-950/60 border-blue-500/40 text-blue-300 font-bold' : 'bg-slate-950/40 border-slate-800 text-slate-500'
+            }`}>
+              👤 Guide: ₹{guideTotal.toLocaleString('en-IN')}
+            </span>
+          </div>
+
+          {/* Right: Quick Action Buttons */}
+          <div className="flex items-center space-x-2">
+            {activeTab !== 'summary' ? (
+              <button
+                onClick={() => handleSetTab('summary')}
+                className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-bold text-xs transition-all border border-slate-700 flex items-center justify-center space-x-1"
+              >
+                <span>View Invoice</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            ) : null}
+            <button
+              onClick={handleProceedToBooking}
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black rounded-xl text-xs sm:text-sm transition-all shadow-lg shadow-emerald-500/30 flex items-center justify-center space-x-1.5 cursor-pointer"
+            >
+              <span>Book Tour (₹{grandTotal.toLocaleString('en-IN')})</span>
+              <ArrowRight className="w-4 h-4 font-bold" />
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
