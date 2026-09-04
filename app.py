@@ -37,6 +37,7 @@ advisories = data.get("advisories", [])
 feedbacks_list = data.get("feedbacksList", [])
 complaints_list = data.get("complaintsList", [])
 
+from database import db
 from tourmitra_engine import process_tourmitra_chat, get_gemini_api_key
 
 def call_gemini(prompt, system_instruction=None, response_schema=None):
@@ -72,7 +73,7 @@ def call_gemini(prompt, system_instruction=None, response_schema=None):
     return None
 
 # ----------------------------------------------------
-# 1. TOURISM MASTER DATA ENDPOINTS
+# 1. TOURISM MASTER DATA & DATABASE ENDPOINTS
 # ----------------------------------------------------
 
 @app.route("/api/health", methods=["GET"])
@@ -83,19 +84,33 @@ def health():
         "hackathon": "Smart India Hackathon 2026",
         "problemStatement": "26204",
         "team": "NEXUS",
+        "database": db.get_database_stats(),
         "hasGeminiKey": bool(get_gemini_api_key())
     })
+
+@app.route("/api/db/stats", methods=["GET"])
+def get_db_stats():
+    return jsonify(db.get_database_stats())
+
+@app.route("/api/db/query", methods=["POST"])
+def run_db_query():
+    body = request.get_json() or {}
+    query = body.get("query", "")
+    try:
+        results = db.execute_query(query)
+        return jsonify({"success": True, "count": len(results), "rows": results})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 @app.route("/api/spots", methods=["GET"])
 def get_spots():
     city = request.args.get("city")
     category = request.args.get("category")
-    filtered = list(tourist_spots)
-    if city and city != "all":
-        filtered = [s for s in filtered if city.lower() in s.get("city", "").lower()]
-    if category and category != "all":
-        filtered = [s for s in filtered if s.get("category", "").lower() == category.lower()]
-    return jsonify(filtered)
+    return jsonify(db.get_spots(city=city, category=category))
+
+@app.route("/api/spots/<spot_id>/facilities", methods=["GET"])
+def get_spot_facilities(spot_id):
+    return jsonify(db.get_all_facilities_for_spot(spot_id))
 
 @app.route("/api/spots", methods=["POST"])
 def create_spot():
@@ -126,42 +141,29 @@ def create_spot():
 @app.route("/api/hotels", methods=["GET"])
 def get_hotels():
     spot = request.args.get("spot")
-    filtered = list(hotels_list)
-    if spot and spot != "all":
-        filtered = [h for h in filtered if spot.lower() in h.get("tourismSpot", "").lower()]
-    return jsonify(filtered)
+    return jsonify(db.get_hotels(tourism_spot=spot))
 
 @app.route("/api/restaurants", methods=["GET"])
 def get_restaurants():
     spot = request.args.get("spot")
-    filtered = list(restaurants_list)
-    if spot and spot != "all":
-        filtered = [r for r in filtered if spot.lower() in r.get("tourismSpot", "").lower()]
-    return jsonify(filtered)
+    pure_veg = request.args.get("pureVeg")
+    pv_bool = (pure_veg.lower() == "true") if pure_veg is not None else None
+    return jsonify(db.get_restaurants(tourism_spot=spot, pure_veg=pv_bool))
 
 @app.route("/api/entertainments", methods=["GET"])
 def get_entertainments():
     spot = request.args.get("spot")
-    filtered = list(entertainments_list)
-    if spot and spot != "all":
-        filtered = [e for e in filtered if spot.lower() in e.get("tourismSpot", "").lower()]
-    return jsonify(filtered)
+    return jsonify(db.get_entertainments(tourism_spot=spot))
 
 @app.route("/api/taxis", methods=["GET"])
 def get_taxis():
     spot = request.args.get("spot")
-    filtered = list(taxis_list)
-    if spot and spot != "all":
-        filtered = [t for t in filtered if spot.lower() in t.get("tourismSpot", "").lower()]
-    return jsonify(filtered)
+    return jsonify(db.get_taxis(tourism_spot=spot))
 
 @app.route("/api/guides", methods=["GET"])
 def get_guides():
     spot = request.args.get("spot")
-    filtered = list(guides_list)
-    if spot and spot != "all":
-        filtered = [g for g in filtered if spot.lower() in g.get("tourismSpot", "").lower()]
-    return jsonify(filtered)
+    return jsonify(db.get_guides(tourism_spot=spot))
 
 # ----------------------------------------------------
 # 2. SERVICE PROVIDER MANAGEMENT

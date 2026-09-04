@@ -52,6 +52,7 @@ advisories = data.get("advisories", [])
 feedbacks_list = data.get("feedbacksList", [])
 complaints_list = data.get("complaintsList", [])
 
+from database import db
 from tourmitra_engine import process_tourmitra_chat, get_gemini_api_key
 
 def call_gemini(prompt: str, system_instruction: Optional[str] = None, response_schema: bool = False):
@@ -81,7 +82,7 @@ def call_gemini(prompt: str, system_instruction: Optional[str] = None, response_
     return None
 
 # ----------------------------------------------------
-# 1. HEALTH & MASTER DATA
+# 1. HEALTH & RELATIONAL DATABASE ENDPOINTS
 # ----------------------------------------------------
 
 @app.get("/api/health")
@@ -92,17 +93,33 @@ async def health():
         "hackathon": "Smart India Hackathon 2026",
         "problemStatement": "26204",
         "team": "NEXUS",
+        "database": db.get_database_stats(),
         "hasGeminiKey": bool(get_gemini_api_key())
     }
 
+@app.get("/api/db/stats")
+async def get_db_stats():
+    """Returns PostgreSQL table row counts and schema metadata."""
+    return db.get_database_stats()
+
+@app.post("/api/db/query")
+async def run_db_query(body: Dict[str, Any] = Body(...)):
+    """Executes read-only SQL query against the relational database."""
+    query = body.get("query", "")
+    try:
+        results = db.execute_query(query)
+        return {"success": True, "count": len(results), "rows": results}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 @app.get("/api/spots")
 async def get_spots(city: Optional[str] = None, category: Optional[str] = None):
-    filtered = list(tourist_spots)
-    if city and city != "all":
-        filtered = [s for s in filtered if city.lower() in s.get("city", "").lower()]
-    if category and category != "all":
-        filtered = [s for s in filtered if s.get("category", "").lower() == category.lower()]
-    return filtered
+    return db.get_spots(city=city, category=category)
+
+@app.get("/api/spots/{spot_id}/facilities")
+async def get_spot_facilities(spot_id: str):
+    """Relational SQL query returning linked hotels, restaurants, guides, entertainments, and taxis."""
+    return db.get_all_facilities_for_spot(spot_id)
 
 @app.post("/api/spots", status_code=201)
 async def create_spot(body: Dict[str, Any] = Body(...)):
@@ -131,38 +148,23 @@ async def create_spot(body: Dict[str, Any] = Body(...)):
 
 @app.get("/api/hotels")
 async def get_hotels(spot: Optional[str] = None):
-    filtered = list(hotels_list)
-    if spot and spot != "all":
-        filtered = [h for h in filtered if spot.lower() in h.get("tourismSpot", "").lower()]
-    return filtered
+    return db.get_hotels(tourism_spot=spot)
 
 @app.get("/api/restaurants")
-async def get_restaurants(spot: Optional[str] = None):
-    filtered = list(restaurants_list)
-    if spot and spot != "all":
-        filtered = [r for r in filtered if spot.lower() in r.get("tourismSpot", "").lower()]
-    return filtered
+async def get_restaurants(spot: Optional[str] = None, pureVeg: Optional[bool] = None):
+    return db.get_restaurants(tourism_spot=spot, pure_veg=pureVeg)
 
 @app.get("/api/entertainments")
 async def get_entertainments(spot: Optional[str] = None):
-    filtered = list(entertainments_list)
-    if spot and spot != "all":
-        filtered = [e for e in filtered if spot.lower() in e.get("tourismSpot", "").lower()]
-    return filtered
+    return db.get_entertainments(tourism_spot=spot)
 
 @app.get("/api/taxis")
 async def get_taxis(spot: Optional[str] = None):
-    filtered = list(taxis_list)
-    if spot and spot != "all":
-        filtered = [t for t in filtered if spot.lower() in t.get("tourismSpot", "").lower()]
-    return filtered
+    return db.get_taxis(tourism_spot=spot)
 
 @app.get("/api/guides")
 async def get_guides(spot: Optional[str] = None):
-    filtered = list(guides_list)
-    if spot and spot != "all":
-        filtered = [g for g in filtered if spot.lower() in g.get("tourismSpot", "").lower()]
-    return filtered
+    return db.get_guides(tourism_spot=spot)
 
 # ----------------------------------------------------
 # 2. PROVIDERS

@@ -813,12 +813,17 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between text-xs">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Visiting Hours</span>
-                      <span className="text-[11px] text-slate-300 font-medium">{spot.timings || '09:00 AM - 06:00 PM'}</span>
+                      <span className="text-[10px] text-slate-500 block">Distance & Entry Fee</span>
+                      <div className="flex items-center space-x-1.5 mt-0.5">
+                        <span className="text-[11px] text-emerald-300 font-semibold">📍 {spot.distanceFromPune || 'Pune Hub'}</span>
+                        <span className="text-[11px] text-white font-bold bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
+                          {spot.entryFee ? `₹${spot.entryFee}/person` : 'Free Entry'}
+                        </span>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <span className="text-[10px] text-slate-500 block">Best Time</span>
-                      <span className="text-[11px] text-emerald-400 font-medium">{spot.bestTimeToVisit || 'Morning / Evening'}</span>
+                      <span className="text-[10px] text-slate-500 block">Visiting Hours</span>
+                      <span className="text-[11px] text-slate-300 font-medium">{spot.timings || '09:00 AM - 06:00 PM'}</span>
                     </div>
                   </div>
                 </div>
@@ -880,10 +885,10 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     <div className="relative h-36 rounded-xl overflow-hidden bg-slate-950">
                       <img src={hotel.image} alt={hotel.hotelName} className="w-full h-full object-cover" />
                       <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-950/80 backdrop-blur-md text-[10px] font-bold text-teal-300">
-                        {hotel.tourismSpot}
+                        📍 {hotel.tourismSpot}
                       </div>
                       <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-md bg-slate-950/90 text-[10px] font-bold text-teal-300 border border-teal-500/20">
-                        Verified Eco-Stay
+                        ₹{hotel.pricePerNight?.toLocaleString('en-IN') || '1,800'} / night
                       </div>
                     </div>
 
@@ -894,6 +899,10 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                           <Star className="w-3.5 h-3.5 fill-amber-400" />
                           <span>{hotel.rating}</span>
                         </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2 text-[11px] text-slate-400 mt-1">
+                        <span className="text-teal-300 font-semibold">📍 {hotel.distanceFromSpot || (hotel.distanceKm + ' km')} from spot</span>
                       </div>
 
                       <div className="flex flex-wrap gap-1 mt-2">
@@ -908,8 +917,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Location Area</span>
-                      <span className="font-semibold text-teal-300 text-xs">Near {hotel.tourismSpot}</span>
+                      <span className="text-[10px] text-slate-500 block">Distance & Tariff</span>
+                      <span className="font-bold text-teal-300 text-xs">₹{hotel.pricePerNight?.toLocaleString('en-IN') || '1,800'} <span className="text-[10px] text-slate-400 font-normal">/ night</span></span>
                     </div>
 
                     <button
@@ -1003,15 +1012,16 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                       )}
                     </div>
 
-                    <div className="text-[11px] text-slate-400">
-                      Located near: <span className="text-slate-300 font-semibold">{rest.tourismSpot}</span>
+                    <div className="text-[11px] text-slate-400 flex items-center justify-between pt-1">
+                      <span>📍 Near <span className="text-slate-200 font-semibold">{rest.tourismSpot}</span></span>
+                      <span className="text-amber-300 font-semibold">{rest.distanceFromSpot || (rest.distanceKm + ' km')}</span>
                     </div>
                   </div>
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Dining Speciality</span>
-                      <span className="font-semibold text-amber-300 text-xs">{rest.cuisine}</span>
+                      <span className="text-[10px] text-slate-500 block">Avg. Cost for Two</span>
+                      <span className="font-bold text-amber-300 text-xs">₹{rest.priceForTwo || 400}</span>
                     </div>
 
                     <button
@@ -1092,15 +1102,16 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     <div className="text-[11px] text-slate-400">
                       Category: <span className="text-purple-300 font-semibold">{act.category}</span>
                     </div>
-                    <div className="text-[11px] text-slate-400">
-                      Location: <span className="text-slate-300 font-semibold">{act.tourismSpot}</span>
+                    <div className="text-[11px] text-slate-400 flex items-center justify-between">
+                      <span>📍 Near: <span className="text-slate-200 font-semibold">{act.tourismSpot}</span></span>
+                      <span className="text-purple-300 font-semibold">{act.distanceFromSpot}</span>
                     </div>
                   </div>
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Activity Experience</span>
-                      <span className="font-semibold text-purple-300 text-xs">{act.category}</span>
+                      <span className="text-[10px] text-slate-500 block">Approx. Entry Fee</span>
+                      <span className="font-bold text-purple-300 text-xs">{act.approxEntryFee ? `₹${act.approxEntryFee}/person` : 'Free Entry'}</span>
                     </div>
 
                     <button
@@ -1180,7 +1191,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                         <Car className="w-4 h-4 text-cyan-400" />
                         <h4 className="font-bold text-white text-sm">Pune ➔ {taxi.tourismSpot}</h4>
                       </div>
-                      <span className="text-[10px] font-bold text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">Transit Route</span>
+                      <span className="text-[10px] font-bold text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/40">{taxi.distanceFromPune}</span>
                     </div>
 
                     <div className="text-xs text-slate-400">
@@ -1209,8 +1220,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Fleet Category</span>
-                      <span className="font-semibold text-cyan-300 text-xs">{selectedTaxi?.route.id === taxi.id ? selectedTaxi.vehicleType : 'EV Cab / Sedan / SUV'}</span>
+                      <span className="text-[10px] text-slate-500 block">Approx. Transit Fare</span>
+                      <span className="font-bold text-cyan-300 text-xs">{taxi.approxTaxiFare}</span>
                     </div>
 
                     <button
@@ -1294,7 +1305,7 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
                     </div>
 
                     <div className="text-[11px] text-slate-400">
-                      Destination: <span className="text-slate-300 font-semibold">{guide.tourismSpot}</span>
+                      Destination: <span className="text-slate-200 font-semibold">{guide.tourismSpot}</span>
                     </div>
 
                     {guide.specialization && (
@@ -1314,8 +1325,8 @@ export const TouristFacilityBookingSection: React.FC<TouristFacilityBookingSecti
 
                   <div className="pt-3 mt-3 border-t border-slate-800/80 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] text-slate-500 block">Accreditation</span>
-                      <span className="font-semibold text-blue-300 text-xs">Certified Board Guide</span>
+                      <span className="text-[10px] text-slate-500 block">Approx. Guide Fee</span>
+                      <span className="font-bold text-blue-300 text-xs">{guide.approxGuidePrice || `₹${guide.priceINR}/day`}</span>
                     </div>
 
                     <button
