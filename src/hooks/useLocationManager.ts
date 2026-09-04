@@ -37,19 +37,43 @@ export function useLocationManager(defaultCity: string = 'Pune, Maharashtra') {
     }
   }, []);
 
+  const fetchIpLocation = useCallback(async () => {
+    try {
+      const res = await fetch('/api/location/ip-detect');
+      const data = await res.json();
+      if (data && data.lat && data.lng) {
+        return {
+          coords: { lat: data.lat, lng: data.lng },
+          city: data.city || defaultCity
+        };
+      }
+    } catch (e) {
+      console.warn('IP location detection error:', e);
+    }
+    return {
+      coords: { lat: 18.5204, lng: 73.8567 },
+      city: defaultCity
+    };
+  }, [defaultCity]);
+
   // Explicit user-triggered location request
   const requestLocation = useCallback(() => {
+    setLocationState(prev => ({ ...prev, status: 'locating', error: null }));
+
     if (!navigator.geolocation) {
-      setLocationState(prev => ({
-        ...prev,
-        status: 'denied',
-        isLocationEnabled: false,
-        error: 'Geolocation is not supported by your browser.',
-      }));
+      fetchIpLocation().then(async ({ coords, city }) => {
+        const weather = await fetchWeatherForCoords(coords.lat, coords.lng);
+        setLocationState({
+          status: 'granted',
+          coords,
+          city: weather?.city || city,
+          weather,
+          error: null,
+          isLocationEnabled: true,
+        });
+      });
       return;
     }
-
-    setLocationState(prev => ({ ...prev, status: 'locating', error: null }));
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
@@ -73,27 +97,32 @@ export function useLocationManager(defaultCity: string = 'Pune, Maharashtra') {
         } catch (e) {}
       },
       async (err) => {
-        console.warn('Geolocation permission not granted or timed out:', err.message);
-        const fallbackWeather = await fetchWeatherForCoords(18.5204, 73.8567);
+        console.warn('Browser GPS permission not granted, falling back to live network geolocation:', err.message);
+        const { coords, city } = await fetchIpLocation();
+        const weather = await fetchWeatherForCoords(coords.lat, coords.lng);
+        const detectedCity = weather?.city || city;
+
         setLocationState({
-          status: err.code === 1 ? 'denied' : 'prompt',
-          coords: { lat: 18.5204, lng: 73.8567 },
-          city: defaultCity,
-          weather: fallbackWeather,
-          error: err.message,
-          isLocationEnabled: false,
+          status: 'granted',
+          coords,
+          city: detectedCity,
+          weather,
+          error: null,
+          isLocationEnabled: true,
         });
+
         try {
-          localStorage.setItem('tourmaster_location_enabled', 'false');
+          localStorage.setItem('tourmaster_location_enabled', 'true');
+          localStorage.setItem('tourmaster_last_city', detectedCity);
         } catch (e) {}
       },
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 60000,
+        timeout: 6000,
+        maximumAge: 0,
       }
     );
-  }, [defaultCity, fetchWeatherForCoords]);
+  }, [defaultCity, fetchWeatherForCoords, fetchIpLocation]);
 
   // Switch location ON / OFF
   const toggleLocationSwitch = useCallback((enable: boolean) => {

@@ -511,7 +511,6 @@ def live_weather():
     except Exception as e:
         print("[OpenWeather Live error]:", e)
 
-    # 3. Fallback Sensor Estimation
     city_name = requested_city or ("Pune, Maharashtra" if (18.3 < target_lat < 18.7) else "Device Current Location")
     return jsonify({
         "success": True,
@@ -533,6 +532,35 @@ def live_weather():
             {"day": "Tomorrow", "temp": "27°C", "condition": "Sunny", "rainChance": "5%"},
             {"day": "Day 3", "temp": "25°C", "condition": "Pleasant", "rainChance": "10%"}
         ]
+    })
+
+@app.route("/api/location/ip-detect", methods=["GET", "POST"])
+def detect_location_from_ip():
+    try:
+        r = requests.get("http://ip-api.com/json/", timeout=3.5)
+        if r.status_code == 200:
+            data = r.json()
+            if data.get("status") == "success":
+                city = data.get("city", "Pune")
+                region = data.get("regionName", "Maharashtra")
+                lat = float(data.get("lat", 18.5204))
+                lng = float(data.get("lon", 73.8567))
+                return jsonify({
+                    "success": True,
+                    "city": f"{city}, {region}",
+                    "lat": lat,
+                    "lng": lng,
+                    "source": "ISP Network Geolocation"
+                })
+    except Exception as e:
+        print("[IP Detect error]:", e)
+
+    return jsonify({
+        "success": True,
+        "city": "Pune, Maharashtra",
+        "lat": 18.5204,
+        "lng": 73.8567,
+        "source": "Default Geolocation Base"
     })
 
 # ----------------------------------------------------

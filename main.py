@@ -473,8 +473,36 @@ async def live_weather(body: Dict[str, Any] = Body(...)):
         "forecast": [
             {"day": "Today", "temp": "24°C", "condition": "Partly Cloudy", "rainChance": "15%"},
             {"day": "Tomorrow", "temp": "27°C", "condition": "Sunny", "rainChance": "5%"},
-            {"day": "Day 3", "temp": "25°C", "condition": "Pleasant", "rainChance": "10%"}
-        ]
+    }
+
+@app.get("/api/location/ip-detect")
+@app.post("/api/location/ip-detect")
+async def detect_location_from_ip():
+    try:
+        r = requests.get("http://ip-api.com/json/", timeout=3.5)
+        if r.status_code == 200:
+            data = r.json()
+            if data.get("status") == "success":
+                city = data.get("city", "Pune")
+                region = data.get("regionName", "Maharashtra")
+                lat = float(data.get("lat", 18.5204))
+                lng = float(data.get("lon", 73.8567))
+                return {
+                    "success": True,
+                    "city": f"{city}, {region}",
+                    "lat": lat,
+                    "lng": lng,
+                    "source": "ISP Network Geolocation"
+                }
+    except Exception as e:
+        print("[IP Detect error]:", e)
+
+    return {
+        "success": True,
+        "city": "Pune, Maharashtra",
+        "lat": 18.5204,
+        "lng": 73.8567,
+        "source": "Default Geolocation Base"
     }
 
 # ----------------------------------------------------
