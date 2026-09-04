@@ -286,9 +286,9 @@ SPOT_COORDS = {
     "Alandi": (18.6772, 73.8967, "Spiritual & Wellness", 0, 4.8, 91, "/images/spots/alandi.jpg"),
     "Dehu": (18.7189, 73.7717, "Spiritual & Wellness", 0, 4.7, 90, "/images/spots/dehu.jpg"),
     "Phoenix Mall of the Millennium": (18.5986, 73.7667, "Eco-Tourism & Rural", 0, 4.7, 88, "/images/spots/phoenix-mall-of-the-millennium.jpg"),
-    "Phoenix Marketcity Pune": (18.5622, 73.9167, "Eco-Tourism & Rural", 0, 4.7, 89, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
-    "Amanora Mall": (18.5194, 73.9317, "Eco-Tourism & Rural", 0, 4.6, 88, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
-    "Seasons Mall": (18.5186, 73.9333, "Eco-Tourism & Rural", 0, 4.6, 88, "https://images.unsplash.com/photo-1567449303078-57ad995bd301?auto=format&fit=crop&w=800&q=80"),
+    "Phoenix Marketcity Pune": (18.5622, 73.9167, "Eco-Tourism & Rural", 0, 4.7, 89, "/images/spots/phoenix-marketcity-pune.jpg"),
+    "Amanora Mall": (18.5194, 73.9317, "Eco-Tourism & Rural", 0, 4.6, 88, "/images/spots/amanora-mall.jpg"),
+    "Seasons Mall": (18.5186, 73.9333, "Eco-Tourism & Rural", 0, 4.6, 88, "/images/spots/seasons-mall.jpg"),
     "Imagicaa": (18.7492, 73.2844, "Adventure & Trekking", 1499, 4.6, 88, "/images/spots/imagicaa.jpg"),
     "Lal Mahal": (18.5194, 73.8561, "Heritage & Culture", 10, 4.5, 91, "/images/spots/lal-mahal.jpg"),
     "Pashan Lake": (18.5367, 73.7844, "Nature & Wildlife", 0, 4.4, 95, "/images/spots/pashan-lake.jpg")
