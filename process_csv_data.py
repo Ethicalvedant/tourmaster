@@ -264,10 +264,10 @@ Pashan Lake,10 km,"Birdwatching, nature, walking" """
 
 # Normalized Spot Metadata
 SPOT_COORDS = {
-    "Shaniwar Wada": (18.5196, 73.8553, "Heritage & Culture", 25, 4.6, 92, "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80"),
+    "Shaniwar Wada": (18.5196, 73.8553, "Heritage & Culture", 25, 4.6, 92, "/images/spots/shaniwar-wada.jpg"),
     "Sinhagad Fort": (18.3663, 73.7558, "Adventure & Trekking", 50, 4.8, 96, "/images/spots/sinhagad-fort.jpg"),
-    "Dagdusheth Halwai Ganpati": (18.5165, 73.8561, "Spiritual & Wellness", 0, 4.9, 94, "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=800&q=80"),
-    "Aga Khan Palace": (18.5524, 73.9015, "Heritage & Culture", 25, 4.6, 94, "https://images.unsplash.com/photo-1582510003544-4d00b7f74220?auto=format&fit=crop&w=800&q=80"),
+    "Dagdusheth Halwai Ganpati": (18.5165, 73.8561, "Spiritual & Wellness", 0, 4.9, 94, "/images/spots/dagdusheth-halwai-ganpati.jpg"),
+    "Aga Khan Palace": (18.5524, 73.9015, "Heritage & Culture", 25, 4.6, 94, "/images/spots/aga-khan-palace.jpg"),
     "Khadakwasla Dam": (18.4287, 73.7661, "Nature & Wildlife", 0, 4.5, 91, "/images/spots/khadakwasla-dam.jpg"),
     "Rajgad Fort": (18.2582, 73.6828, "Adventure & Trekking", 50, 4.8, 98, "/images/spots/rajgad-fort.jpg"),
     "Torna Fort": (18.2772, 73.6231, "Adventure & Trekking", 50, 4.7, 97, "/images/spots/torna-fort.jpg"),
@@ -277,7 +277,7 @@ SPOT_COORDS = {
     "Lohagad Fort": (18.7058, 73.4794, "Adventure & Trekking", 50, 4.7, 95, "/images/spots/lohagad-fort.jpg"),
     "Panshet Dam": (18.3756, 73.5939, "Nature & Wildlife", 30, 4.5, 94, "/images/spots/panshet-dam.jpg"),
     "Visapur Fort": (18.7186, 73.4878, "Adventure & Trekking", 50, 4.7, 95, "/images/spots/visapur-fort.jpg"),
-    "Rajmachi Fort": (18.8286, 73.3986, "Adventure & Trekking", 50, 4.8, 97, "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80"),
+    "Rajmachi Fort": (18.8286, 73.3986, "Adventure & Trekking", 50, 4.8, 97, "/images/spots/rajmachi-fort.jpg"),
     "Rajiv Gandhi Zoological Park": (18.4552, 73.8617, "Nature & Wildlife", 40, 4.4, 90, "/images/spots/rajiv-gandhi-zoological-park.jpg"),
     "ISKCON NVCC, Katraj": (18.4485, 73.8804, "Spiritual & Wellness", 0, 4.8, 93, "/images/spots/iskcon-nvcc-katraj.jpg"),
     "Swaminarayan Temple, Narhe": (18.4467, 73.8189, "Spiritual & Wellness", 0, 4.7, 92, "/images/spots/swaminarayan-temple-narhe.jpg"),
