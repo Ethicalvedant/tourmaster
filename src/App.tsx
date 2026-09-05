@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { HeaderNavbar } from './components/HeaderNavbar';
 import { AITourGuideAssistant } from './components/TouristHub/AITourGuideAssistant';
+import { GlobalWakeListenerPill } from './components/TouristHub/GlobalWakeListenerPill';
 import { EmergencySOSModal } from './components/TouristHub/EmergencySOSModal';
 import { BookingCheckoutModal } from './components/TouristHub/BookingCheckoutModal';
 import { TouristFacilityBookingSection } from './components/TouristHub/TouristFacilityBookingSection';
@@ -372,6 +373,15 @@ export function App() {
           <Bot className="w-5 h-5 text-slate-950" />
           <span className="hidden sm:inline">Ask TourMitra AI</span>
         </button>
+      )}
+
+      {/* Porcupine Always-Listening Global Voice Wake Pill (for Tourist & Provider) */}
+      {(role === 'tourist' || role === 'provider') && (
+        <GlobalWakeListenerPill
+          onWakeTriggered={(query) => handleOpenTourGuideWithPrompt(query)}
+          destination={locationManager.city || liveWeather?.city || itinerary.destination}
+          isAssistantOpen={isTourGuideOpen}
+        />
       )}
 
       {/* Firebase-Secured Authentication Modal */}

@@ -132,6 +132,7 @@ export interface TouristSpot {
   imageUrl?: string;
   bestTimeToVisit?: string;
   nearestTransport?: string;
+  distanceFromPune?: string;
   tags?: string[];
 }
 
@@ -192,11 +193,12 @@ export interface ServiceProvider {
   contactNumber: string;
   availableSlots: number;
   ecoCertified: boolean;
-  ecoTier?: 'Gold Green' | 'Silver Eco' | 'Bronze Standard';
+  ecoTier?: 'Gold Green' | 'Silver Eco' | 'Bronze Standard' | 'Platinum Zero-Carbon';
   image: string;
   languages?: string[];
   vehicleModel?: string;
   amenities?: string[];
+  vehicleTypes?: string[];
   isLiveAvailable?: boolean;
   kycStatus?: 'Verified' | 'Pending Review' | 'Rejected';
   licenseNumber?: string;
@@ -257,11 +259,34 @@ export interface ChatMessage {
   id: string;
   sender: 'user' | 'assistant';
   text: string;
+  voiceText?: string;
   timestamp: string;
   suggestions?: string[];
   audioUrl?: string;
+  isWakeQuery?: boolean;
+  wakePhrase?: string;
+  isVoiceInput?: boolean;
   isBookingIntent?: boolean;
   bookingCategory?: 'spots' | 'hotels' | 'restaurants' | 'activities' | 'taxis' | 'guides' | 'summary';
+}
+
+export type VoiceAssistantState = 'idle' | 'listening' | 'wake_detected' | 'processing' | 'speaking' | 'error';
+
+export interface VoiceSettings {
+  autoSpeak: boolean;
+  voiceLang: string; // 'en-IN' | 'hi-IN' | 'mr-IN' | 'en-US'
+  speechRate: number; // 0.8 to 1.3
+  speechPitch: number; // 0.8 to 1.2
+  soundChimes: boolean;
+  porcupineWakeEnabled: boolean;
+  continuousMode: boolean; // Vapi hands-free loop
+}
+
+export interface WakeEventPayload {
+  phrase: string;
+  timestamp: number;
+  confidence?: number;
+  extractedQuery?: string;
 }
 
 export interface HotelItem {
@@ -313,8 +338,11 @@ export interface GuideItem {
   id: string;
   tourismSpot: string;
   guideName: string;
+  name?: string; // alias for guideName
   approxGuidePrice?: string;
+  approxPrice?: string; // alias for approxGuidePrice
   priceINR?: number;
+  priceInr?: number; // alias for priceINR
   dailyRate?: number;
   rating?: number;
   languages: string[];

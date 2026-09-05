@@ -722,11 +722,12 @@ def tour_guide_companion():
     query = body.get("query", "").strip()
     dest = body.get("destination", "Pune, Maharashtra")
     history = body.get("history", [])
+    is_voice = body.get("isVoiceMode", False)
 
     if not query:
         return jsonify({"error": "Query is required"}), 400
 
-    result = process_tourmitra_chat(query, dest, history)
+    result = process_tourmitra_chat(query, dest, history, is_voice_mode=is_voice)
     return jsonify(result)
 
 @app.route("/api/ai/adapt-weather", methods=["POST"])

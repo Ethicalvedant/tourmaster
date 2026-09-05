@@ -598,10 +598,11 @@ async def tour_guide(body: Dict[str, Any] = Body(...)):
     query = body.get("query", "").strip()
     dest = body.get("destination", "Pune, Maharashtra")
     history = body.get("history", [])
+    is_voice = body.get("isVoiceMode", False)
     if not query:
         raise HTTPException(status_code=400, detail="Query is required")
 
-    return process_tourmitra_chat(query, dest, history)
+    return process_tourmitra_chat(query, dest, history, is_voice_mode=is_voice)
 
 @app.post("/api/ai/adapt-weather")
 async def adapt_weather(body: Dict[str, Any] = Body(...)):

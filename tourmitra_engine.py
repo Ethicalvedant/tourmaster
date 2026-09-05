@@ -208,6 +208,151 @@ def call_gemini_tourmitra(
             
     return None
 
+# ---------------------------------------------------------------------------
+# Porcupine & Vapi Voice Engine Helpers
+# ---------------------------------------------------------------------------
+
+WAKE_WORD_PATTERNS = [
+    r'\bhey\s+tourmitra\b',
+    r'\btourmitra\b',
+    r'\btour\s+mitra\b',
+    r'\bnamaste\s+tourmitra\b',
+    r'\bnamaste\s+mitra\b',
+    r'\bhey\s+mitra\b',
+    r'\bwake\s+up\s+tourmitra\b',
+    r'\bwake\s+up\b',
+    r'\bare\s+you\s+listening\b',
+    r'\bsuno\s+tourmitra\b',
+    r'\bhey\s+tourmaster\b',
+    r'\btourmaster\b',
+]
+
+def detect_wake_query(query: str) -> tuple[bool, bool, str, str]:
+    """
+    Porcupine-style Wake Word detector and Query Splitter.
+    Returns:
+      (is_wake, is_standalone_wake, matched_phrase, remaining_query)
+    """
+    q_stripped = query.strip()
+    q_lower = q_stripped.lower()
+    
+    matched_phrase = ""
+    for pattern in WAKE_WORD_PATTERNS:
+        match = re.search(pattern, q_lower)
+        if match:
+            matched_phrase = match.group(0)
+            break
+            
+    if not matched_phrase:
+        return False, False, "", q_stripped
+        
+    # Remove the wake word from query to see if there is an attached command/query
+    cleaned_after_wake = re.sub(re.escape(matched_phrase), "", q_lower, count=1, flags=re.IGNORECASE)
+    # Strip common filler prepositions like "please", "can you", "tell me", commas, question marks
+    cleaned_after_wake = re.sub(r'^[\s,:\.!?\-]+', '', cleaned_after_wake).strip()
+    
+    # Standalone wake if string is empty or just generic punctuation/greetings
+    is_standalone = len(cleaned_after_wake) == 0 or cleaned_after_wake in [
+        "hi", "hello", "hey", "namaste", "wassup", "sup", "bhai", "bol", "kaisa hai", "are you there"
+    ]
+    
+    # Extract the original casing corresponding to remaining query
+    if is_standalone:
+        remaining_query = ""
+    else:
+        # Regex to strip the wake phrase from the original case query
+        remaining_query = re.sub(re.escape(matched_phrase), "", q_stripped, count=1, flags=re.IGNORECASE).strip()
+        remaining_query = re.sub(r'^[\s,:\.!?\-]+', '', remaining_query).strip()
+        
+    return True, is_standalone, matched_phrase, remaining_query
+
+def generate_clean_voice_text(markdown_text: str, max_sentences: int = 4) -> str:
+    """
+    Generate natural, pronunciation-friendly plain speech text from Markdown.
+    Strips markdown formatting, hashtags, asterisks, tables, URLs, and all emojis,
+    creating crisp, fluid spoken audio for Vapi / Web Speech Synthesis engines.
+    """
+    if not markdown_text:
+        return "Namaste! I am TourMitra, your travel companion. How can I help you today?"
+        
+    text = markdown_text
+    
+    # Strip markdown headers, bold, italics, code blocks
+    text = re.sub(r'```[\s\S]*?```', '', text)
+    text = re.sub(r'`[^`]*`', '', text)
+    text = re.sub(r'[\*\_~#>]', ' ', text)
+    
+    # Strip bullet points and list markers
+    text = re.sub(r'^\s*[\-\+•\d+\.]\s+', ' ', text, flags=re.MULTILINE)
+    
+    # Strip URLs and link formats [text](url) -> text
+    text = re.sub(r'\[([^\]]+)\]\([^\)]+\)', r'\1', text)
+    text = re.sub(r'https?://\S+', '', text)
+    
+    # Strip all unicode emojis / symbols
+    emoji_pattern = re.compile(
+        "["
+        "\U00010000-\U0010ffff"
+        "\U00002600-\U000027bf"
+        "\U00002300-\U000023ff"
+        "\U00002b50-\U00002b55"
+        "\U0000200d"
+        "\U0000fe0f"
+        "]+",
+        flags=re.UNICODE
+    )
+    text = emoji_pattern.sub(' ', text)
+    
+    # Replace multiple spaces / newlines with single spaces
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    # Take first few meaningful sentences to keep voice response punchy and fast (Vapi style)
+    sentences = [s.strip() for s in re.split(r'(?<=[.!?])\s+', text) if s.strip()]
+    if len(sentences) > max_sentences:
+        spoken_slice = " ".join(sentences[:max_sentences])
+    else:
+        spoken_slice = " ".join(sentences) if sentences else text
+        
+    if len(spoken_slice) > 400:
+        spoken_slice = spoken_slice[:397].rsplit(' ', 1)[0] + "..."
+        
+    return spoken_slice
+
+
+def get_dedicated_wake_response(destination: str = "Pune, Maharashtra", user_query: str = "") -> tuple[str, str]:
+    """
+    Generate dedicated instant wake response when user invokes wake word.
+    Returns (markdown_ui_text, clean_voice_text).
+    """
+    q_lower = user_query.lower()
+    
+    if "marathi" in q_lower or "kasa" in q_lower or "kase" in q_lower:
+        md = (
+            f"**नमस्कार! मी तूर मित्र (TourMitra)**, तुमचा AI प्रवास मित्र! 🎙️✨\n\n"
+            f"मी पूर्णपणे जागा आणि तयार आहे. {destination} मध्ये किल्ले, खाद्यसंस्कृती किंवा प्रवासाबद्दल काय जाणून घ्यायचे आहे? विचारा, मी ऐकतोय!"
+        )
+        voice = f"Namaskar! Mi TourMitra, tumcha AI pravas mitra. Mi purna-pane zaga aani tayar aahe. {destination} baddal kay vicharayche aahe? Saanga, mi aiktoy!"
+    elif "kaisa" in q_lower or "bhai" in q_lower or "bol" in q_lower or "kya haal" in q_lower:
+        md = (
+            f"**Namaste dost! TourMitra (तूर मित्र) is live & listening!** 🎙️✨\n\n"
+            f"Main ekdum first class hoon! {destination} mein ghumne, khane, cab book karne ya lore janne ke liye batao, aaj kahan se shuru karein?"
+        )
+        voice = f"Namaste dost! TourMitra is live and listening! Main ekdum first class hoon. {destination} mein ghumne, hotel ya khane ke liye bataiye, aaj kahan se shuru karein?"
+    else:
+        md = (
+            f"**Namaste! I am TourMitra (तूर मित्र)**, your 24/7 AI Voice & Cultural Companion in **{destination}**! 🎙️✨\n\n"
+            f"🟢 **Wake Word Detected**: I am active, listening, and ready to guide your journey.\n\n"
+            f"You can speak naturally or ask me about:\n"
+            f"• 🏰 **Historical Forts & Monuments** (Sinhagad, Shaniwar Wada)\n"
+            f"• 🍲 **Authentic Street Food** (Misal Pav, Pithla Bhakri)\n"
+            f"• 🎟️ **Instant Tour Booking** (Spots, Stays, Taxis & Guides)\n"
+            f"• 🚨 **24/7 Safety & Emergency SOS**\n\n"
+            f"*I'm listening! Speak your question now or tap any suggestion below.*"
+        )
+        voice = f"Namaste! I am TourMitra, your AI travel companion in {destination}. I am awake and listening! How can I guide your journey today?"
+        
+    return md, voice
+
 def offline_fallback_response(query: str, destination: str = "Pune, Maharashtra") -> str:
     """
     Rich offline knowledge base and conversational fallback engine for TourMitra.
@@ -330,24 +475,63 @@ def offline_fallback_response(query: str, destination: str = "Pune, Maharashtra"
 def process_tourmitra_chat(
     query: str,
     destination: str = "Pune, Maharashtra",
-    history: Optional[List[Dict[str, str]]] = None
+    history: Optional[List[Dict[str, str]]] = None,
+    is_voice_mode: bool = False
 ) -> Dict[str, Any]:
     """
-    Main unified handler for TourMitra AI Chat.
-    Tries Gemini LLM call with fallbacks, intent detection, and dynamic suggestions.
+    Main unified handler for TourMitra AI Chat and Vapi/Porcupine Voice Engine.
+    Processes wake words, executes Gemini LLM with multi-turn context, detects booking intents,
+    and returns both rich Markdown UI text and clean TTS-friendly voice text.
     """
     cleaned_query = query.strip()
-    is_booking, booking_cat = detect_booking_intent(cleaned_query)
     
-    ai_text = call_gemini_tourmitra(cleaned_query, destination, history)
+    # 1. Porcupine Wake Word Detection
+    is_wake, is_standalone_wake, wake_phrase, trailing_query = detect_wake_query(cleaned_query)
+    
+    # If standalone wake word invocation ("Hey TourMitra", "Wake up TourMitra")
+    if is_wake and is_standalone_wake:
+        md_text, voice_text = get_dedicated_wake_response(destination, cleaned_query)
+        suggestions = [
+            "🎟️ Book Tourism Tour (Spots, Stays, Taxis)",
+            "What are the top 5 must-visit spots in Pune?",
+            "Suggest an authentic local street food trail",
+            "Give me essential Marathi phrases for tourists"
+        ]
+        return {
+            "text": md_text,
+            "voiceText": voice_text,
+            "isWakeQuery": True,
+            "wakeAcknowledged": True,
+            "wakePhrase": wake_phrase or "Hey TourMitra",
+            "isBookingIntent": False,
+            "bookingCategory": "spots",
+            "suggestions": suggestions,
+            "modelUsed": "TourMitra Porcupine Wake Engine"
+        }
+        
+    # If wake word with query (e.g. "Hey TourMitra tell me about Sinhagad Fort")
+    effective_query = trailing_query if (is_wake and trailing_query) else cleaned_query
+    
+    is_booking, booking_cat = detect_booking_intent(effective_query)
+    
+    ai_text = call_gemini_tourmitra(effective_query, destination, history)
     
     if not ai_text:
-        ai_text = offline_fallback_response(cleaned_query, destination)
+        ai_text = offline_fallback_response(effective_query, destination)
         
-    suggestions = generate_contextual_suggestions(cleaned_query, ai_text, destination)
+    # If wake word was prefixed to a question, make sure response starts warmly
+    if is_wake and not ai_text.lower().startswith("namaste"):
+        ai_text = f"**Namaste! TourMitra is on it:** 🎙️✨\n\n{ai_text}"
+        
+    suggestions = generate_contextual_suggestions(effective_query, ai_text, destination)
+    voice_text = generate_clean_voice_text(ai_text)
     
     return {
         "text": ai_text,
+        "voiceText": voice_text,
+        "isWakeQuery": is_wake,
+        "wakeAcknowledged": is_wake,
+        "wakePhrase": wake_phrase if is_wake else "",
         "isBookingIntent": is_booking,
         "bookingCategory": booking_cat,
         "suggestions": suggestions,
